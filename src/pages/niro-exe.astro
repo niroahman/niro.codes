@@ -1,0 +1,73 @@
+---
+import CRTLayout from '../layouts/CRTLayout.astro';
+---
+
+<CRTLayout title="NIRO.EXE">
+  <div class="game-stub">
+    <a href="/" class="back">&larr; ~/index</a>
+    <div class="center">
+      <pre
+        class="logo"
+        aria-label="NIRO.EXE">
+ ███╗   ██╗██╗██████╗  ██████╗    ███████╗██╗  ██╗███████╗
+ ████╗  ██║██║██╔══██╗██╔═══██╗   ██╔════╝╚██╗██╔╝██╔════╝
+ ██╔██╗ ██║██║██████╔╝██║   ██║   █████╗   ╚███╔╝ █████╗
+ ██║╚██╗██║██║██╔══██╗██║   ██║   ██╔══╝   ██╔██╗ ██╔══╝
+ ██║ ╚████║██║██║  ██║╚██████╔╝   ███████╗██╔╝ ██╗███████╗
+ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝ ╚═════╝   ╚══════╝╚═╝  ╚═╝╚══════╝</pre>
+      <p class="coin">[ INSERT COIN ]</p>
+      <p class="coming">coming soon</p>
+    </div>
+  </div>
+</CRTLayout>
+
+<style>
+  .game-stub {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    padding: 2rem 1.5rem;
+    box-sizing: border-box;
+  }
+
+  .back {
+    font-size: 0.75rem;
+    color: var(--phosphor-dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .back:hover {
+    color: var(--phosphor);
+  }
+
+  .center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .logo {
+    font-size: 9px;
+    line-height: 1.2;
+    white-space: pre;
+    color: var(--phosphor);
+    text-shadow:
+      0 0 8px var(--phosphor),
+      0 0 20px color-mix(in srgb, var(--phosphor) 40%, transparent);
+  }
+
+  .coin {
+    font-size: 1rem;
+    color: var(--amber);
+    animation: blink 1.2s step-end infinite;
+  }
+
+  .coming {
+    font-size: 0.75rem;
+    color: var(--phosphor-dim);
+  }
+</style>
