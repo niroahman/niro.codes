@@ -5,7 +5,7 @@ import AppearanceControls from '../components/AppearanceControls.astro';
 import NavPrompt from '../components/NavPrompt.astro';
 
 const menuItems = [
-  { key: '1', label: 'about.exe', description: 'who is this guy', href: '/about' },
+  { key: '1', label: 'about.me', description: 'who is this guy', href: '/about' },
   { key: '2', label: 'projects/', description: "things i've built", href: '/projects' },
   { key: '3', label: 'blog.log', description: 'thoughts & writeups', href: '/blog' },
   { key: '4', label: '/now', description: "what i'm doing now", href: '/now' },
@@ -88,8 +88,28 @@ const externalLinks = [
 
 <script>
   document.addEventListener('bootcomplete', () => {
+    const boot = document.getElementById('boot-sequence');
     const menu = document.getElementById('home-menu');
-    menu?.classList.add('visible');
+
+    if (!boot || boot.style.display === 'none') {
+      menu?.classList.add('visible');
+      return;
+    }
+
+    const lines = boot.querySelectorAll<HTMLElement>('.boot-line');
+    lines.forEach((line, i) => {
+      line.style.transitionDelay = `${i * 45}ms`;
+      line.style.transition = 'opacity 180ms ease-out';
+      line.style.opacity = '0';
+    });
+
+    setTimeout(
+      () => {
+        boot.style.display = 'none';
+        menu?.classList.add('visible');
+      },
+      lines.length * 45 + 220
+    );
   });
 </script>
 
@@ -148,7 +168,7 @@ const externalLinks = [
     align-items: baseline;
     color: var(--phosphor);
     text-decoration: none;
-    font-size: 0.875rem;
+    font-size: 1rem;
     padding: 0.2rem 0;
     transition: opacity 0.15s;
   }
@@ -168,7 +188,7 @@ const externalLinks = [
 
   .menu-desc {
     color: var(--phosphor-dim);
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
 
   .ext-links {
@@ -176,7 +196,7 @@ const externalLinks = [
     gap: 2rem;
     border: 1px dashed var(--dim);
     padding: 0.6rem 1rem;
-    font-size: 0.8rem;
+    font-size: 0.875rem;
   }
 
   .ext-link {

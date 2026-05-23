@@ -18,7 +18,12 @@ const defaultLines = [
 const { lines = defaultLines, lineDelay = 110 } = Astro.props;
 ---
 
-<div id="boot-sequence" aria-live="polite">
+<div
+  id="boot-sequence"
+  aria-live="polite"
+  data-line-count={lines.length}
+  data-line-delay={lineDelay}
+>
   {
     lines.map((line, i) => (
       <p class="boot-line" style={`animation-delay: ${i * lineDelay}ms`}>
@@ -28,15 +33,27 @@ const { lines = defaultLines, lineDelay = 110 } = Astro.props;
   }
 </div>
 
-<script define:vars={{ lineCount: lines.length, lineDelay }}>
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const totalMs = reduced ? 0 : lineCount * lineDelay + 250;
-  setTimeout(() => document.dispatchEvent(new CustomEvent('bootcomplete')), totalMs);
+<script>
+  const el = document.getElementById('boot-sequence') as HTMLElement;
+  const lineCount = parseInt(el.dataset.lineCount!);
+  const lineDelay = parseInt(el.dataset.lineDelay!);
+
+  if (sessionStorage.getItem('niro.codes:booted')) {
+    el.style.display = 'none';
+    document.dispatchEvent(new CustomEvent('bootcomplete'));
+  } else {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const totalMs = reduced ? 0 : lineCount * lineDelay + 250;
+    setTimeout(() => {
+      sessionStorage.setItem('niro.codes:booted', '1');
+      document.dispatchEvent(new CustomEvent('bootcomplete'));
+    }, totalMs);
+  }
 </script>
 
 <style>
   #boot-sequence {
-    font-size: 0.875rem;
+    font-size: 1rem;
     line-height: 1.8;
   }
 

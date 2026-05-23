@@ -14,7 +14,7 @@
 /* ── Token defaults (dark) ── */
 :root {
   --phosphor: #ff6eb4;
-  --phosphor-dim: color-mix(in srgb, var(--phosphor) 35%, #000);
+  --phosphor-dim: color-mix(in srgb, var(--phosphor) 60%, #1a1a1a);
   --bg: #050a05;
   --bg-outer: #0d1f0d;
   --amber: #ffb300;
@@ -34,6 +34,7 @@ html {
   background: var(--bg-outer);
   color: var(--phosphor);
   font-family: 'Courier New', Courier, monospace;
+  font-size: 16px;
 }
 
 body {
