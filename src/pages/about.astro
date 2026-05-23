@@ -1,0 +1,232 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout title="about" description="Who is Niro Åhman">
+  <main class="about">
+    <header class="about-header">
+      <a href="/" class="back">&larr; ~/index</a>
+      <span class="breadcrumb">about.exe</span>
+    </header>
+
+    <div class="about-body">
+      <div class="photo-col">
+        <div class="photo-wrap">
+          <img src="/niro.jpg" alt="Niro Åhman" class="photo" />
+        </div>
+        <p class="photo-caption">niro.åhman — tampere, finland</p>
+      </div>
+
+      <div class="text-col">
+        <h1 class="name glow">Niro Åhman</h1>
+        <p class="role">Senior Full-Stack Developer</p>
+
+        <p class="bio">
+          I build products end-to-end. React and Next.js on the front, Go on the back, AWS
+          underneath. I care about the details that most people skip — performance, accessibility,
+          deployment pipelines, and whether the thing actually works in production.
+        </p>
+
+        <p class="bio">
+          Outside of work I run a homelab on Proxmox and Docker, which is mostly an excuse to break
+          things in a safe environment and learn how they fit back together. I have strong opinions
+          about tools, weak opinions about methodology.
+        </p>
+
+        <div class="stack">
+          <p class="stack-label">current stack</p>
+          <ul class="stack-list">
+            <li>React / Next.js / TypeScript</li>
+            <li>Go</li>
+            <li>AWS (ECS, Lambda, RDS, S3)</li>
+            <li>Postgres</li>
+            <li>Docker / Proxmox</li>
+          </ul>
+        </div>
+
+        <div class="links">
+          <a href="https://github.com/niroahman" target="_blank" rel="noopener noreferrer"
+            >github ↗</a
+          >
+          <a href="https://linkedin.com/in/niroahman" target="_blank" rel="noopener noreferrer"
+            >linkedin ↗</a
+          >
+        </div>
+      </div>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .about {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  .about-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    font-size: 0.75rem;
+  }
+
+  .back {
+    color: var(--phosphor-dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .back:hover {
+    color: var(--phosphor);
+  }
+
+  .breadcrumb {
+    color: var(--phosphor);
+    opacity: 0.5;
+  }
+
+  .about-body {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 3rem;
+    align-items: start;
+  }
+
+  /* ── Photo ── */
+  .photo-col {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .photo-wrap {
+    position: relative;
+    width: 240px;
+    height: 240px;
+    overflow: hidden;
+  }
+
+  .photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    display: block;
+    filter: grayscale(1) contrast(1.1) brightness(0.95);
+  }
+
+  /* phosphor color tint */
+  .photo-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--phosphor);
+    mix-blend-mode: color;
+    opacity: 0.35;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* scanlines */
+  .photo-wrap::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent,
+      transparent 2px,
+      rgba(0 0 0 / 0.18) 2px,
+      rgba(0 0 0 / 0.18) 4px
+    );
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .photo-caption {
+    font-size: 0.7rem;
+    color: var(--phosphor-dim);
+    text-align: center;
+  }
+
+  /* ── Text ── */
+  .name {
+    font-size: 1.25rem;
+    margin: 0 0 0.25rem;
+    font-weight: bold;
+  }
+
+  .role {
+    color: var(--phosphor-dim);
+    margin: 0 0 1.5rem;
+    font-size: 0.8rem;
+  }
+
+  .bio {
+    color: var(--phosphor);
+    line-height: 1.7;
+    margin: 0 0 1rem;
+    opacity: 0.85;
+  }
+
+  .stack {
+    margin: 1.5rem 0;
+    border-left: 2px solid var(--dim);
+    padding-left: 1rem;
+  }
+
+  .stack-label {
+    font-size: 0.7rem;
+    color: var(--phosphor-dim);
+    margin: 0 0 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+
+  .stack-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    color: var(--phosphor);
+    opacity: 0.8;
+  }
+
+  .stack-list li::before {
+    content: '> ';
+    color: var(--phosphor-dim);
+  }
+
+  .links {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .links a {
+    color: var(--phosphor-dim);
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: color 0.15s;
+  }
+
+  .links a:hover {
+    color: var(--phosphor);
+  }
+
+  @media (max-width: 600px) {
+    .about-body {
+      grid-template-columns: 1fr;
+    }
+
+    .photo-wrap {
+      width: 100%;
+      height: 260px;
+    }
+  }
+</style>
