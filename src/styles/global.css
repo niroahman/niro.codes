@@ -1,1 +1,172 @@
 @import 'tailwindcss';
+
+/* ── Tailwind theme aliases ── */
+@theme inline {
+  --color-phosphor: var(--phosphor);
+  --color-phosphor-dim: var(--phosphor-dim);
+  --color-bg: var(--bg);
+  --color-bg-outer: var(--bg-outer);
+  --color-amber: var(--amber);
+  --color-dim: var(--dim);
+  --font-mono: 'Courier New', Courier, monospace;
+}
+
+/* ── Token defaults (dark) ── */
+:root {
+  --phosphor: #ff6eb4;
+  --phosphor-dim: color-mix(in srgb, var(--phosphor) 35%, #000);
+  --bg: #050a05;
+  --bg-outer: #0d1f0d;
+  --amber: #ffb300;
+  --dim: rgba(255 255 255 / 0.12);
+}
+
+/* ── Light theme ── */
+[data-theme='light'] {
+  --phosphor-dim: color-mix(in srgb, var(--phosphor) 70%, #000);
+  --bg: #f4f4ec;
+  --bg-outer: #e4e4d8;
+  --dim: rgba(0 0 0 / 0.18);
+}
+
+/* ── Base ── */
+html {
+  background: var(--bg-outer);
+  color: var(--phosphor);
+  font-family: 'Courier New', Courier, monospace;
+}
+
+body {
+  background: var(--bg);
+  color: var(--phosphor);
+  min-height: 100dvh;
+}
+
+/* ── Keyframes ── */
+@keyframes flicker {
+  0%,
+  91%,
+  94%,
+  97%,
+  100% {
+    opacity: 1;
+  }
+  92%,
+  96% {
+    opacity: 0.87;
+  }
+  93% {
+    opacity: 0.95;
+  }
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadein {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ── CRT shell ── */
+.crt {
+  position: relative;
+  overflow: hidden;
+  animation: flicker 9s infinite;
+}
+
+/* scanlines */
+.crt::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent,
+    transparent 2px,
+    rgba(0 0 0 / 0.07) 2px,
+    rgba(0 0 0 / 0.07) 4px
+  );
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* vignette */
+.crt::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(ellipse at center, transparent 55%, rgba(0 0 0 / 0.65) 100%);
+  pointer-events: none;
+  z-index: 11;
+}
+
+/* ── Glow ── */
+.glow {
+  text-shadow:
+    0 0 4px var(--phosphor),
+    0 0 12px color-mix(in srgb, var(--phosphor) 55%, transparent),
+    0 0 24px color-mix(in srgb, var(--phosphor) 25%, transparent);
+}
+
+/* ── Reflection ── */
+.reflection {
+  position: relative;
+}
+
+.reflection::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255 255 255 / 0.04) 0%,
+    transparent 50%,
+    rgba(255 255 255 / 0.01) 100%
+  );
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* ── Cursor ── */
+.cursor::after {
+  content: '▋';
+  animation: blink 1s step-end infinite;
+  color: var(--phosphor);
+}
+
+/* ── Line ── */
+.line {
+  border: none;
+  border-top: 1px solid var(--dim);
+  margin: 1rem 0;
+}
+
+/* ── ASCII ── */
+.ascii {
+  white-space: pre;
+  line-height: 1.2;
+  color: var(--phosphor-dim);
+}

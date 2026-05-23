@@ -23,6 +23,7 @@ pnpm-debug.log*
 Thumbs.db
 
 # editors
+.vscode/
 .idea/
 *.suo
 *.ntvs*
