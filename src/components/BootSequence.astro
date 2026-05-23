@@ -1,0 +1,55 @@
+---
+interface Props {
+  lines?: string[];
+  lineDelay?: number;
+}
+
+const defaultLines = [
+  'NIRO.EXE v1.0.0',
+  '──────────────────────────────────',
+  'loading personality ......... [OK]',
+  'mounting homelab ............ [OK]',
+  'calibrating opinions ........ [OK]',
+  'connecting to the void ...... [OK]',
+  '──────────────────────────────────',
+  'system ready.',
+];
+
+const { lines = defaultLines, lineDelay = 110 } = Astro.props;
+---
+
+<div id="boot-sequence" aria-live="polite">
+  {
+    lines.map((line, i) => (
+      <p class="boot-line" style={`animation-delay: ${i * lineDelay}ms`}>
+        {line}
+      </p>
+    ))
+  }
+</div>
+
+<script define:vars={{ lineCount: lines.length, lineDelay }}>
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const totalMs = reduced ? 0 : lineCount * lineDelay + 250;
+  setTimeout(() => document.dispatchEvent(new CustomEvent('bootcomplete')), totalMs);
+</script>
+
+<style>
+  #boot-sequence {
+    font-size: 0.875rem;
+    line-height: 1.8;
+  }
+
+  .boot-line {
+    margin: 0;
+    opacity: 0;
+    animation: appear 220ms ease-out forwards;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .boot-line {
+      animation: none;
+      opacity: 1;
+    }
+  }
+</style>
