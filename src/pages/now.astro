@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const updated = '2026-05-23';
+---
+
+<BaseLayout title="/now" description="What Niro is doing right now">
+  <main class="now">
+    <header class="page-header">
+      <a href="/" class="back">&larr; ~/index</a>
+      <span class="breadcrumb">/now</span>
+    </header>
+
+    <p class="updated">last updated: {updated}</p>
+
+    <div class="now-body">
+      <section class="now-section">
+        <h2 class="section-title">working on</h2>
+        <ul class="now-list">
+          <li>This site — building it properly instead of fast.</li>
+          <li>Something at Framery I can't talk about yet.</li>
+        </ul>
+      </section>
+
+      <section class="now-section">
+        <h2 class="section-title">reading</h2>
+        <ul class="now-list">
+          <li>Working in Public — Nadia Eghbal</li>
+        </ul>
+      </section>
+
+      <section class="now-section">
+        <h2 class="section-title">interested in</h2>
+        <ul class="now-list">
+          <li>Homelab expansion — more Proxmox nodes, proper network segmentation.</li>
+          <li>Rust — not seriously yet, but circling it.</li>
+        </ul>
+      </section>
+    </div>
+
+    <p class="now-footer">
+      This is a <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer"
+        >/now page</a
+      >. Update it when life changes.
+    </p>
+  </main>
+</BaseLayout>
+
+<style>
+  .now {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  .back {
+    color: var(--phosphor-dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .back:hover {
+    color: var(--phosphor);
+  }
+
+  .breadcrumb {
+    color: var(--phosphor);
+    opacity: 0.5;
+  }
+
+  .updated {
+    font-size: 0.7rem;
+    color: var(--phosphor-dim);
+    margin: 0 0 2.5rem;
+  }
+
+  .now-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .section-title {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--phosphor-dim);
+    margin: 0 0 0.75rem;
+  }
+
+  .now-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    color: var(--phosphor);
+    opacity: 0.85;
+    line-height: 1.6;
+  }
+
+  .now-list li::before {
+    content: '– ';
+    color: var(--phosphor-dim);
+  }
+
+  .now-footer {
+    margin-top: 3rem;
+    font-size: 0.75rem;
+    color: var(--phosphor-dim);
+  }
+
+  .now-footer a {
+    color: var(--phosphor-dim);
+    transition: color 0.15s;
+  }
+
+  .now-footer a:hover {
+    color: var(--phosphor);
+  }
+</style>

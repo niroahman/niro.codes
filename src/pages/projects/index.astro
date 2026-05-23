@@ -1,0 +1,219 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const all = await getCollection('projects');
+const projects = all.sort((a, b) => {
+  if (a.data.featured && !b.data.featured) return -1;
+  if (!a.data.featured && b.data.featured) return 1;
+  return b.data.date.getTime() - a.data.date.getTime();
+});
+---
+
+<BaseLayout title="projects" description="Things Niro has built">
+  <main class="projects">
+    <header class="page-header">
+      <a href="/" class="back">&larr; ~/index</a>
+      <span class="breadcrumb">projects/</span>
+    </header>
+
+    <ul class="project-list">
+      {
+        projects.map((p) => (
+          <li class="project-card">
+            {p.data.image && (
+              <a href={`/projects/${p.id}`} class="card-image-link" tabindex="-1">
+                <div class="card-image-wrap">
+                  <img src={p.data.image} alt={p.data.title} class="card-image" />
+                </div>
+              </a>
+            )}
+            <div class="card-body">
+              <h2 class="card-title">
+                <a href={`/projects/${p.id}`}>{p.data.title}</a>
+              </h2>
+              <p class="card-desc">{p.data.description}</p>
+              <ul class="tech-list">
+                {p.data.tech.map((t) => (
+                  <li class="tech-tag">{t}</li>
+                ))}
+              </ul>
+              <div class="card-links">
+                <a href={`/projects/${p.id}`} class="card-link">
+                  details →
+                </a>
+                {p.data.slideUrl && (
+                  <a
+                    href={p.data.slideUrl}
+                    class="card-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    slides ↗
+                  </a>
+                )}
+                {p.data.github && (
+                  <a
+                    href={p.data.github}
+                    class="card-link"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    github ↗
+                  </a>
+                )}
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+</BaseLayout>
+
+<style>
+  .projects {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    font-size: 0.75rem;
+  }
+
+  .back {
+    color: var(--phosphor-dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .back:hover {
+    color: var(--phosphor);
+  }
+
+  .breadcrumb {
+    color: var(--phosphor);
+    opacity: 0.5;
+  }
+
+  .project-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .project-card {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: 1.5rem;
+    border-top: 1px solid var(--dim);
+    padding-top: 2rem;
+  }
+
+  .card-image-wrap {
+    width: 200px;
+    height: 130px;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.05);
+    display: block;
+    transition: filter 0.2s;
+  }
+
+  .card-image-link:hover .card-image {
+    filter: grayscale(0.5) contrast(1.05);
+  }
+
+  .card-image-wrap::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--phosphor);
+    mix-blend-mode: color;
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .card-title a {
+    color: var(--phosphor);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: bold;
+  }
+
+  .card-title a:hover {
+    text-decoration: underline;
+  }
+
+  .card-desc {
+    color: var(--phosphor-dim);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .tech-list {
+    list-style: none;
+    margin: 0.25rem 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .tech-tag {
+    font-size: 0.7rem;
+    border: 1px solid var(--dim);
+    padding: 0.1rem 0.5rem;
+    color: var(--phosphor-dim);
+  }
+
+  .card-links {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+  }
+
+  .card-link {
+    color: var(--phosphor-dim);
+    text-decoration: none;
+    font-size: 0.8rem;
+    transition: color 0.15s;
+  }
+
+  .card-link:hover {
+    color: var(--phosphor);
+  }
+
+  @media (max-width: 600px) {
+    .project-card {
+      grid-template-columns: 1fr;
+    }
+
+    .card-image-wrap {
+      width: 100%;
+      height: 180px;
+    }
+  }
+</style>

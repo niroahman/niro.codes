@@ -1,0 +1,131 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const all = await getCollection('blog', ({ data }) => !data.draft);
+const posts = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+function formatDate(d: Date) {
+  return d.toISOString().slice(0, 10);
+}
+---
+
+<BaseLayout title="blog" description="Thoughts and writeups by Niro Åhman">
+  <main class="blog">
+    <header class="page-header">
+      <a href="/" class="back">&larr; ~/index</a>
+      <span class="breadcrumb">blog.log</span>
+    </header>
+
+    <ul class="post-list">
+      {
+        posts.map((p) => (
+          <li class="post-item">
+            <time class="post-date" datetime={p.data.date.toISOString()}>
+              {formatDate(p.data.date)}
+            </time>
+            <div class="post-body">
+              <h2 class="post-title">
+                <a href={`/blog/${p.id}`}>{p.data.title}</a>
+              </h2>
+              <p class="post-desc">{p.data.description}</p>
+              {p.data.tags && (
+                <ul class="tag-list">
+                  {p.data.tags.map((t) => (
+                    <li class="tag">{t}</li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </main>
+</BaseLayout>
+
+<style>
+  .blog {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  .page-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 2.5rem;
+    font-size: 0.75rem;
+  }
+
+  .back {
+    color: var(--phosphor-dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .back:hover {
+    color: var(--phosphor);
+  }
+
+  .breadcrumb {
+    color: var(--phosphor);
+    opacity: 0.5;
+  }
+
+  .post-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .post-item {
+    display: grid;
+    grid-template-columns: 6rem 1fr;
+    gap: 1.25rem;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--dim);
+  }
+
+  .post-date {
+    color: var(--phosphor-dim);
+    font-size: 0.75rem;
+    padding-top: 0.2rem;
+  }
+
+  .post-title a {
+    color: var(--phosphor);
+    text-decoration: none;
+    font-size: 0.95rem;
+    font-weight: bold;
+  }
+
+  .post-title a:hover {
+    text-decoration: underline;
+  }
+
+  .post-desc {
+    color: var(--phosphor-dim);
+    margin: 0.35rem 0 0;
+    line-height: 1.6;
+  }
+
+  .tag-list {
+    list-style: none;
+    margin: 0.5rem 0 0;
+    padding: 0;
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    border: 1px solid var(--dim);
+    padding: 0.1rem 0.4rem;
+    color: var(--phosphor-dim);
+  }
+</style>

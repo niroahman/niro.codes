@@ -1,0 +1,148 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  return posts.map((p) => ({ params: { slug: p.id }, props: { post: p } }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const { title, description, date, tags } = post.data;
+
+function formatDate(d: Date) {
+  return d.toISOString().slice(0, 10);
+}
+---
+
+<BaseLayout title={title} description={description}>
+  <main class="post-detail">
+    <header class="page-header">
+      <a href="/blog" class="back">&larr; blog.log</a>
+    </header>
+
+    <article>
+      <div class="post-meta">
+        <h1 class="post-title glow">{title}</h1>
+        <time class="post-date" datetime={date.toISOString()}>{formatDate(date)}</time>
+        {
+          tags && (
+            <ul class="tag-list">
+              {tags.map((t) => (
+                <li class="tag">{t}</li>
+              ))}
+            </ul>
+          )
+        }
+      </div>
+
+      <div class="prose">
+        <Content />
+      </div>
+    </article>
+  </main>
+</BaseLayout>
+
+<style>
+  .post-detail {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  .page-header {
+    margin-bottom: 2rem;
+    font-size: 0.75rem;
+  }
+
+  .back {
+    color: var(--phosphor-dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .back:hover {
+    color: var(--phosphor);
+  }
+
+  .post-meta {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--dim);
+  }
+
+  .post-title {
+    font-size: 1.4rem;
+    margin: 0 0 0.5rem;
+  }
+
+  .post-date {
+    font-size: 0.75rem;
+    color: var(--phosphor-dim);
+  }
+
+  .tag-list {
+    list-style: none;
+    margin: 0.75rem 0 0;
+    padding: 0;
+    display: flex;
+    gap: 0.4rem;
+  }
+
+  .tag {
+    font-size: 0.7rem;
+    border: 1px solid var(--dim);
+    padding: 0.1rem 0.4rem;
+    color: var(--phosphor-dim);
+  }
+
+  .prose {
+    color: var(--phosphor);
+    line-height: 1.8;
+    opacity: 0.88;
+  }
+
+  .prose :global(h2) {
+    font-size: 1rem;
+    margin: 2rem 0 0.75rem;
+    color: var(--phosphor);
+    opacity: 1;
+  }
+
+  .prose :global(p) {
+    margin: 0 0 1.1rem;
+  }
+
+  .prose :global(a) {
+    color: var(--phosphor);
+    opacity: 0.7;
+    transition: opacity 0.15s;
+  }
+
+  .prose :global(a:hover) {
+    opacity: 1;
+  }
+
+  .prose :global(code) {
+    font-size: 0.85em;
+    color: var(--amber);
+  }
+
+  .prose :global(pre) {
+    border: 1px solid var(--dim);
+    padding: 1rem;
+    overflow-x: auto;
+    margin: 1rem 0;
+    font-size: 0.8rem;
+  }
+
+  .prose :global(blockquote) {
+    border-left: 2px solid var(--dim);
+    padding-left: 1rem;
+    margin: 1rem 0;
+    color: var(--phosphor-dim);
+    font-style: italic;
+  }
+</style>
