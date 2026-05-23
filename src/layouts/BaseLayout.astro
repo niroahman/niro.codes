@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css';
+import Head from '../components/Head.astro';
 
 interface Props {
   title: string;
@@ -12,13 +13,7 @@ const { title, description = 'Portfolio of Niro Åhman — full-stack developer'
 <!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="generator" content={Astro.generator} />
-    <meta name="description" content={description} />
-    <title>{title} — niro.codes</title>
+    <Head title={title} description={description} />
     <script is:inline>
       (function () {
         const theme = localStorage.getItem('niro.codes:theme') || 'dark';
@@ -29,8 +24,11 @@ const { title, description = 'Portfolio of Niro Åhman — full-stack developer'
     </script>
   </head>
   <body>
+    <a href="#main-content" class="skip-link">skip to content</a>
     <div class="base-shell">
-      <slot />
+      <div id="main-content" tabindex="-1">
+        <slot />
+      </div>
     </div>
   </body>
 </html>
