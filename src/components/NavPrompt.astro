@@ -1,0 +1,38 @@
+---
+
+---
+
+<div id="nav-prompt" aria-live="polite" aria-label="Navigation prompt">
+  <span class="prompt-gt" aria-hidden="true">&gt;</span>
+  <span id="nav-prompt-input"></span><span class="cursor" aria-hidden="true"></span>
+</div>
+
+<script>
+  import { initTermNav } from '../scripts/termNav';
+
+  document.addEventListener('bootcomplete', () => {
+    initTermNav();
+    document.getElementById('nav-prompt')?.classList.add('visible');
+  });
+</script>
+
+<style>
+  #nav-prompt {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    margin-top: auto;
+    padding-top: 1.5rem;
+    opacity: 0;
+    transition: opacity 300ms ease-out;
+  }
+
+  #nav-prompt.visible {
+    opacity: 1;
+  }
+
+  .prompt-gt {
+    color: var(--phosphor-dim);
+  }
+</style>

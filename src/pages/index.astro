@@ -2,6 +2,7 @@
 import CRTLayout from '../layouts/CRTLayout.astro';
 import BootSequence from '../components/BootSequence.astro';
 import AppearanceControls from '../components/AppearanceControls.astro';
+import NavPrompt from '../components/NavPrompt.astro';
 
 const menuItems = [
   { key: '1', label: 'about.exe', description: 'who is this guy', href: '/about' },
@@ -27,6 +28,22 @@ const externalLinks = [
       <BootSequence />
 
       <nav id="home-menu" aria-label="Main navigation">
+        <div class="logo-block">
+          <pre
+            class="logo"
+            aria-label="NIRO">
+ ███╗   ██╗██╗██████╗  ██████╗
+ ████╗  ██║██║██╔══██╗██╔═══██╗
+ ██╔██╗ ██║██║██████╔╝██║   ██║
+ ██║╚██╗██║██║██╔══██╗██║   ██║
+ ██║ ╚████║██║██║  ██║╚██████╔╝
+ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝ ╚═════╝</pre>
+          <p class="subtitle">
+            senior full-stack dev &nbsp;·&nbsp; tampere, finland &nbsp;·&nbsp; react / next.js / go
+            / aws
+          </p>
+        </div>
+
         <ul class="menu-list">
           {
             menuItems.map((item) => (
@@ -63,6 +80,8 @@ const externalLinks = [
           <span class="menu-desc game-coin">[ INSERT COIN ]</span>
         </a>
       </nav>
+
+      <NavPrompt />
     </div>
   </div>
 </CRTLayout>
@@ -173,5 +192,27 @@ const externalLinks = [
   .game-coin {
     color: var(--amber);
     animation: blink 1.2s step-end infinite;
+  }
+
+  .logo-block {
+    margin-bottom: 0.5rem;
+  }
+
+  .logo {
+    font-size: 10px;
+    line-height: 1.2;
+    white-space: pre;
+    color: var(--phosphor);
+    text-shadow:
+      0 0 8px var(--phosphor),
+      0 0 20px color-mix(in srgb, var(--phosphor) 40%, transparent);
+    margin: 0 0 0.75rem;
+  }
+
+  .subtitle {
+    font-size: 0.75rem;
+    color: var(--phosphor-dim);
+    border-bottom: 1px solid var(--dim);
+    padding-bottom: 0.5rem;
   }
 </style>
