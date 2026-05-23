@@ -1,0 +1,117 @@
+---
+const swatches = [
+  { hex: '#ff6eb4', label: 'pink' },
+  { hex: '#39ff14', label: 'classic' },
+  { hex: '#ffb300', label: 'warm' },
+  { hex: '#00e5ff', label: 'cool' },
+  { hex: '#c084fc', label: 'purple' },
+  { hex: '#e8e8e8', label: 'minimal' },
+];
+---
+
+<div class="appearance-controls">
+  <button id="theme-toggle" aria-label="Toggle theme">[dark]</button>
+  <div class="swatches" role="group" aria-label="Accent color">
+    {
+      swatches.map((s) => (
+        <button
+          class="swatch"
+          data-phosphor={s.hex}
+          aria-label={s.label}
+          style={`--swatch: ${s.hex}`}
+          title={s.label}
+        />
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  const THEME_KEY = 'niro.codes:theme';
+  const PHOSPHOR_KEY = 'niro.codes:phosphor';
+
+  const toggle = document.getElementById('theme-toggle') as HTMLButtonElement;
+
+  function currentTheme() {
+    return document.documentElement.getAttribute('data-theme') ?? 'dark';
+  }
+
+  function syncLabel() {
+    toggle.textContent = `[${currentTheme()}]`;
+  }
+
+  syncLabel();
+
+  toggle.addEventListener('click', () => {
+    const next = currentTheme() === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem(THEME_KEY, next);
+    syncLabel();
+  });
+
+  const savedPhosphor = localStorage.getItem(PHOSPHOR_KEY);
+
+  document.querySelectorAll<HTMLButtonElement>('[data-phosphor]').forEach((btn) => {
+    if (savedPhosphor && btn.dataset.phosphor === savedPhosphor) {
+      btn.setAttribute('data-active', '');
+    }
+
+    btn.addEventListener('click', () => {
+      const hex = btn.dataset.phosphor!;
+      document.documentElement.style.setProperty('--phosphor', hex);
+      localStorage.setItem(PHOSPHOR_KEY, hex);
+      document.querySelectorAll('[data-phosphor]').forEach((b) => b.removeAttribute('data-active'));
+      btn.setAttribute('data-active', '');
+    });
+  });
+</script>
+
+<style>
+  .appearance-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 0.75rem;
+  }
+
+  #theme-toggle {
+    color: var(--phosphor);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    font-family: inherit;
+    font-size: inherit;
+    opacity: 0.6;
+    transition: opacity 0.15s;
+  }
+
+  #theme-toggle:hover {
+    opacity: 1;
+  }
+
+  .swatches {
+    display: flex;
+    gap: 0.375rem;
+    align-items: center;
+  }
+
+  .swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--swatch);
+    border: 1px solid rgba(255 255 255 / 0.15);
+    cursor: pointer;
+    padding: 0;
+    transition:
+      transform 0.1s,
+      box-shadow 0.1s;
+  }
+
+  .swatch:hover,
+  .swatch[data-active] {
+    transform: scale(1.4);
+    box-shadow: 0 0 6px var(--swatch);
+  }
+</style>
