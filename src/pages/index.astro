@@ -87,16 +87,18 @@ const externalLinks = [
 </CRTLayout>
 
 <script>
-  document.addEventListener('bootcomplete', () => {
+  function handleBootComplete() {
     const boot = document.getElementById('boot-sequence');
     const menu = document.getElementById('home-menu');
 
-    if (!boot || boot.style.display === 'none') {
+    if (boot?.classList.contains('skip')) {
+      // Return visit: lines invisible but space preserved, show menu now
       menu?.classList.add('visible');
       return;
     }
 
-    const lines = boot.querySelectorAll<HTMLElement>('.boot-line');
+    // First visit: fade lines out top-to-bottom, keep space
+    const lines = boot?.querySelectorAll<HTMLElement>('.boot-line') ?? [];
     lines.forEach((line, i) => {
       line.style.transitionDelay = `${i * 45}ms`;
       line.style.transition = 'opacity 180ms ease-out';
@@ -105,12 +107,17 @@ const externalLinks = [
 
     setTimeout(
       () => {
-        boot.style.display = 'none';
         menu?.classList.add('visible');
       },
       lines.length * 45 + 220
     );
-  });
+  }
+
+  if ((window as Window & { __bootComplete?: boolean }).__bootComplete) {
+    handleBootComplete();
+  } else {
+    document.addEventListener('bootcomplete', handleBootComplete, { once: true });
+  }
 </script>
 
 <style>

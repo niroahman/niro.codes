@@ -1,10 +1,37 @@
+```
+ ███╗   ██╗██╗██████╗  ██████╗  ·  ██████╗ ██████╗ ██████╗ ███████╗███████╗
+ ████╗  ██║██║██╔══██╗██╔═══██╗   ██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝
+ ██╔██╗ ██║██║██████╔╝██║   ██║   ██║     ██║   ██║██║  ██║█████╗  ███████╗
+ ██║╚██╗██║██║██╔══██╗██║   ██║   ██║     ██║   ██║██║  ██║██╔══╝  ╚════██║
+ ██║ ╚████║██║██║  ██║╚██████╔╝   ╚██████╗╚██████╔╝██████╔╝███████╗███████║
+ ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝ ╚═════╝    ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚══════╝
+```
+
 # niro.codes
 
-Portfolio site. CRT terminal aesthetic, dark/light themes, Space Invaders clone (NIRO.EXE).
+Personal portfolio site with a CRT terminal aesthetic. Dark/light themes, user-selectable phosphor accent color, Space Invaders clone (NIRO.EXE coming soon).
 
-**Stack:** Astro · Tailwind CSS v4 · React · TypeScript · Vercel · Postgres · Umami
+> **Built openly with AI.** Design and architecture planned together with Hermes (Samantha). Implementation written with [Claude Code](https://claude.ai/code) (Sonnet 4.6). The code is mine — the AI pair programming is just honest.
 
-**Domain:** niro.codes — niro.fi redirects here
+---
+
+## Stack
+
+| Layer      | Tech                                       |
+| ---------- | ------------------------------------------ |
+| Framework  | Astro 6 (SSG)                              |
+| Styling    | Tailwind CSS v4 + custom CRT design system |
+| Components | Astro components + React islands           |
+| Language   | TypeScript (strict)                        |
+| Deploy     | Vercel                                     |
+| Analytics  | Umami (self-hosted, optional)              |
+| Tests      | Vitest + Playwright                        |
+
+## Design system
+
+Single phosphor accent color (`--phosphor-raw`) drives everything — text, glow shadows, image tinting, interactive states. Six curated swatches, persisted to `localStorage`. Dark and light themes both WCAG AA compliant: light theme automatically darkens the phosphor via `color-mix(in oklch)`.
+
+CRT effects live in `src/styles/global.css`: scanlines, vignette, flicker animation, glow shadows. Tailwind handles layout. `::before`/`::after` CRT pseudo-elements stay in CSS — not Tailwind arbitrary values.
 
 ---
 
@@ -22,43 +49,44 @@ npm run build
 npm run preview
 ```
 
+### Analytics (optional)
+
+Copy `.env.example` to `.env` and fill in your Umami instance:
+
+```
+PUBLIC_UMAMI_URL=https://your-umami.example.com/script.js
+PUBLIC_UMAMI_WEBSITE_ID=your-website-id
+```
+
+---
+
 ## Testing
 
 ```bash
 npm run test           # Vitest unit tests
-npm run test:watch     # watch mode
-npm run test:coverage  # coverage report
 npm run test:e2e       # Playwright E2E (starts dev server)
-npm run test:e2e:ui    # Playwright UI mode
 ```
 
 ## Code quality
 
 ```bash
-npm run lint           # ESLint
-npm run lint:fix
-npm run format         # Prettier
-npm run format:check
+npm run lint
+npm run format
 ```
 
-Git hooks via Lefthook:
-
-- **pre-commit** — lint + format check + unit tests
-- **pre-push** — E2E tests
-
-CI runs on push/PR to `main` via GitHub Actions.
+Git hooks via Lefthook — pre-commit: lint + format + unit tests. Pre-push: E2E. CI on push/PR to `main` via GitHub Actions.
 
 ---
 
-## Project structure
+## Structure
 
 ```
 src/
-  components/    # Astro + React components
-  layouts/       # BaseLayout, CRTLayout
+  components/    # AppearanceControls, BootSequence, Head, NavPrompt, SlideEmbed
+  content/       # Blog posts and project entries (MDX)
+  layouts/       # BaseLayout (inner pages), CRTLayout (home/terminal)
   pages/         # File-based routing
-  scripts/       # Client-side TS utilities
-  styles/        # globals.css (CRT design system)
-  content/       # Blog posts (.md)
-e2e/             # Playwright tests
+  scripts/       # termNav.ts — keyboard navigation
+  styles/        # global.css — CRT design system, tokens, animations
+e2e/             # Playwright smoke tests
 ```

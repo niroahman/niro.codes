@@ -13,8 +13,9 @@
 
 /* ── Token defaults (dark) ── */
 :root {
-  --phosphor: #ff6eb4;
-  --phosphor-dim: color-mix(in srgb, var(--phosphor) 60%, #1a1a1a);
+  --phosphor-raw: #ff6eb4;
+  --phosphor: var(--phosphor-raw);
+  --phosphor-dim: color-mix(in srgb, var(--phosphor) 70%, #1a1a1a);
   --bg: #050a05;
   --bg-outer: #0d1f0d;
   --amber: #ffb300;
@@ -23,7 +24,9 @@
 
 /* ── Light theme ── */
 [data-theme='light'] {
-  --phosphor-dim: color-mix(in srgb, var(--phosphor) 70%, #000);
+  /* Darken phosphor enough for WCAG AA on light bg */
+  --phosphor: color-mix(in oklch, var(--phosphor-raw) 50%, black);
+  --phosphor-dim: color-mix(in srgb, var(--phosphor) 80%, #333);
   --bg: #f4f4ec;
   --bg-outer: #e4e4d8;
   --dim: rgba(0 0 0 / 0.18);
@@ -34,7 +37,7 @@ html {
   background: var(--bg-outer);
   color: var(--phosphor);
   font-family: 'Courier New', Courier, monospace;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 body {

@@ -38,15 +38,21 @@ const { lines = defaultLines, lineDelay = 110 } = Astro.props;
   const lineCount = parseInt(el.dataset.lineCount!);
   const lineDelay = parseInt(el.dataset.lineDelay!);
 
-  if (sessionStorage.getItem('niro.codes:booted')) {
-    el.style.display = 'none';
+  function dispatch() {
+    (window as Window & { __bootComplete?: boolean }).__bootComplete = true;
     document.dispatchEvent(new CustomEvent('bootcomplete'));
+  }
+
+  if (sessionStorage.getItem('niro.codes:booted')) {
+    el.classList.add('skip');
+    // Defer one tick so index.astro listener is registered first
+    setTimeout(dispatch, 0);
   } else {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const totalMs = reduced ? 0 : lineCount * lineDelay + 250;
     setTimeout(() => {
       sessionStorage.setItem('niro.codes:booted', '1');
-      document.dispatchEvent(new CustomEvent('bootcomplete'));
+      dispatch();
     }, totalMs);
   }
 </script>
@@ -61,6 +67,11 @@ const { lines = defaultLines, lineDelay = 110 } = Astro.props;
     margin: 0;
     opacity: 0;
     animation: appear 220ms ease-out forwards;
+  }
+
+  #boot-sequence.skip .boot-line {
+    animation: none;
+    opacity: 0;
   }
 
   @media (prefers-reduced-motion: reduce) {

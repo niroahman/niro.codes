@@ -58,7 +58,7 @@ const swatches = [
 
     btn.addEventListener('click', () => {
       const hex = btn.dataset.phosphor!;
-      document.documentElement.style.setProperty('--phosphor', hex);
+      document.documentElement.style.setProperty('--phosphor-raw', hex);
       localStorage.setItem(PHOSPHOR_KEY, hex);
       document.querySelectorAll('[data-phosphor]').forEach((b) => b.removeAttribute('data-active'));
       btn.setAttribute('data-active', '');
