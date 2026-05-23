@@ -1,17 +1,177 @@
 ---
+import CRTLayout from '../layouts/CRTLayout.astro';
+import BootSequence from '../components/BootSequence.astro';
+import AppearanceControls from '../components/AppearanceControls.astro';
 
+const menuItems = [
+  { key: '1', label: 'about.exe', description: 'who is this guy', href: '/about' },
+  { key: '2', label: 'projects/', description: "things i've built", href: '/projects' },
+  { key: '3', label: 'blog.log', description: 'thoughts & writeups', href: '/blog' },
+  { key: '4', label: '/now', description: "what i'm doing now", href: '/now' },
+];
+
+const externalLinks = [
+  { key: 'gh', label: 'github ↗', href: 'https://github.com/niroahman' },
+  { key: 'li', label: 'linkedin ↗', href: 'https://linkedin.com/in/niroahman' },
+];
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="generator" content={Astro.generator} />
-    <title>Astro</title>
-  </head>
-  <body>
-    <h1>Astro</h1>
-  </body>
-</html>
+<CRTLayout title="niro.codes">
+  <div class="terminal">
+    <header class="terminal-header">
+      <span class="glow">NIRO.CODES</span>
+      <AppearanceControls />
+    </header>
+
+    <div class="terminal-body">
+      <BootSequence />
+
+      <nav id="home-menu" aria-label="Main navigation">
+        <ul class="menu-list">
+          {
+            menuItems.map((item) => (
+              <li>
+                <a href={item.href} class="menu-item" data-key={item.key}>
+                  <span class="menu-key">[{item.key}]</span>
+                  <span class="menu-label">{item.label}</span>
+                  <span class="menu-desc">{item.description}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+
+        <div class="ext-links" role="group" aria-label="External links">
+          {
+            externalLinks.map((link) => (
+              <a
+                href={link.href}
+                class="ext-link"
+                data-key={link.key}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                [{link.key}] {link.label}
+              </a>
+            ))
+          }
+        </div>
+
+        <a href="/niro-exe" class="game-entry" data-key="play">
+          <span class="menu-key">[▶]</span>
+          <span class="menu-label">NIRO.EXE</span>
+          <span class="menu-desc game-coin">[ INSERT COIN ]</span>
+        </a>
+      </nav>
+    </div>
+  </div>
+</CRTLayout>
+
+<script>
+  document.addEventListener('bootcomplete', () => {
+    const menu = document.getElementById('home-menu');
+    menu?.classList.add('visible');
+  });
+</script>
+
+<style>
+  .terminal {
+    display: flex;
+    flex-direction: column;
+    height: 100dvh;
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    box-sizing: border-box;
+  }
+
+  .terminal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    font-size: 0.75rem;
+  }
+
+  .terminal-body {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  #home-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    opacity: 0;
+    transition: opacity 400ms ease-out;
+  }
+
+  #home-menu.visible {
+    opacity: 1;
+  }
+
+  .menu-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .menu-item,
+  .game-entry {
+    display: grid;
+    grid-template-columns: 3rem 10rem 1fr;
+    gap: 0.5rem;
+    align-items: baseline;
+    color: var(--phosphor);
+    text-decoration: none;
+    font-size: 0.875rem;
+    padding: 0.2rem 0;
+    transition: opacity 0.15s;
+  }
+
+  .menu-item:hover,
+  .game-entry:hover {
+    opacity: 0.75;
+  }
+
+  .menu-key {
+    opacity: 0.5;
+  }
+
+  .menu-label {
+    font-weight: bold;
+  }
+
+  .menu-desc {
+    color: var(--phosphor-dim);
+    font-size: 0.8rem;
+  }
+
+  .ext-links {
+    display: flex;
+    gap: 2rem;
+    border: 1px dashed var(--dim);
+    padding: 0.6rem 1rem;
+    font-size: 0.8rem;
+  }
+
+  .ext-link {
+    color: var(--phosphor-dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .ext-link:hover {
+    color: var(--phosphor);
+  }
+
+  .game-coin {
+    color: var(--amber);
+    animation: blink 1.2s step-end infinite;
+  }
+</style>
