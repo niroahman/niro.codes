@@ -28,7 +28,9 @@ function formatDate(d: Date) {
               {p.data.tags && (
                 <ul class="tag-list">
                   {p.data.tags.map((t) => (
-                    <li class="tag">{t}</li>
+                    <li class="tag">
+                      <a href={`/tags/${t.toLowerCase()}`}>{t}</a>
+                    </li>
                   ))}
                 </ul>
               )}
@@ -123,5 +125,14 @@ function formatDate(d: Date) {
     border: 1px solid var(--dim);
     padding: 0.1rem 0.4rem;
     color: var(--phosphor-dim);
+  }
+
+  .tag a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .tag a:hover {
+    color: var(--phosphor);
   }
 </style>

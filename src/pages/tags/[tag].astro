@@ -1,0 +1,199 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const [posts, projects] = await Promise.all([
+    getCollection('blog', ({ data }) => !data.draft),
+    getCollection('projects'),
+  ]);
+
+  const tagMap = new Map<string, string>();
+
+  posts.forEach((p) => {
+    p.data.tags?.forEach((t) => {
+      const norm = t.toLowerCase();
+      if (!tagMap.has(norm)) tagMap.set(norm, t);
+    });
+  });
+
+  projects.forEach((p) => {
+    p.data.tech.forEach((t) => {
+      const norm = t.toLowerCase();
+      if (!tagMap.has(norm)) tagMap.set(norm, t);
+    });
+  });
+
+  return [...tagMap.entries()].map(([norm, display]) => ({
+    params: { tag: norm },
+    props: {
+      display,
+      matchingPosts: posts.filter((p) => p.data.tags?.some((t) => t.toLowerCase() === norm)),
+      matchingProjects: projects.filter((p) => p.data.tech.some((t) => t.toLowerCase() === norm)),
+    },
+  }));
+}
+
+const { display, matchingPosts, matchingProjects } = Astro.props;
+
+function formatDate(d: Date) {
+  return d.toISOString().slice(0, 10);
+}
+---
+
+<BaseLayout title={`tag: ${display}`} description={`Posts and projects tagged ${display}`}>
+  <a slot="back" href="/">&larr; ~/index</a>
+  <main class="tag-page">
+    <h1 class="tag-heading"><span class="tag-prefix">#</span>{display}</h1>
+
+    <div class="tag-body">
+      <section class="tag-section">
+        <h2 class="section-title"><span aria-hidden="true">## </span>blog posts</h2>
+        {
+          matchingPosts.length > 0 ? (
+            <ul class="result-list">
+              {matchingPosts.map((p) => (
+                <li class="result-item">
+                  <a href={`/blog/${p.id}`} class="result-link">
+                    {p.data.title}
+                  </a>
+                  <time class="result-meta" datetime={p.data.date.toISOString()}>
+                    {formatDate(p.data.date)}
+                  </time>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="empty">nothing here yet</p>
+          )
+        }
+      </section>
+
+      <section class="tag-section">
+        <h2 class="section-title"><span aria-hidden="true">## </span>projects</h2>
+        {
+          matchingProjects.length > 0 ? (
+            <ul class="result-list">
+              {matchingProjects.map((p) => (
+                <li class="result-item">
+                  <a href={`/projects/${p.id}`} class="result-link">
+                    {p.data.title}
+                  </a>
+                  <span class="result-meta">{p.data.description}</span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p class="empty">nothing here yet</p>
+          )
+        }
+      </section>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .tag-page {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem;
+    font-size: 0.875rem;
+  }
+
+  .tag-heading {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: var(--phosphor);
+    margin: 0 0 2.5rem;
+    text-shadow:
+      0 0 8px var(--phosphor),
+      0 0 20px color-mix(in srgb, var(--phosphor) 40%, transparent);
+  }
+
+  .tag-prefix {
+    color: var(--phosphor-dim);
+    font-weight: normal;
+  }
+
+  .tag-body {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .section-title {
+    font-size: 0.875rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--phosphor);
+    margin: 0 0 0.75rem;
+  }
+
+  .section-title span {
+    color: var(--phosphor-dim);
+    font-weight: normal;
+  }
+
+  .result-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .result-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    color: var(--phosphor);
+    opacity: 0.85;
+  }
+
+  .result-item::before {
+    content: none;
+  }
+
+  .result-item {
+    padding-left: 1.25rem;
+    position: relative;
+  }
+
+  .result-item::before {
+    content: '–';
+    position: absolute;
+    left: 0;
+    color: var(--phosphor-dim);
+  }
+
+  .result-link {
+    color: var(--phosphor);
+    text-decoration: none;
+    line-height: 1.5;
+    transition: opacity 0.15s;
+  }
+
+  .result-link:hover {
+    opacity: 0.7;
+    text-decoration: underline;
+  }
+
+  .result-meta {
+    font-size: 0.75rem;
+    color: var(--phosphor-dim);
+    line-height: 1.4;
+  }
+
+  .empty {
+    color: var(--phosphor-dim);
+    opacity: 0.6;
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .empty::before {
+    content: '– ';
+  }
+</style>

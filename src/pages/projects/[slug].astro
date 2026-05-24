@@ -30,7 +30,13 @@ const { title, description, image, tech, github, demo, slideUrl } = project.data
         <p class="detail-desc">{description}</p>
 
         <ul class="tech-list">
-          {tech.map((t) => <li class="tech-tag">{t}</li>)}
+          {
+            tech.map((t) => (
+              <li class="tech-tag">
+                <a href={`/tags/${t.toLowerCase()}`}>{t}</a>
+              </li>
+            ))
+          }
         </ul>
 
         <div class="detail-links">
@@ -141,6 +147,15 @@ const { title, description, image, tech, github, demo, slideUrl } = project.data
     border: 1px solid var(--dim);
     padding: 0.1rem 0.5rem;
     color: var(--phosphor-dim);
+  }
+
+  .tech-tag a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .tech-tag a:hover {
+    color: var(--phosphor);
   }
 
   .detail-links {
