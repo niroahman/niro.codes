@@ -1,8 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { GithubLogo, LinkedinLogo } from '@phosphor-icons/react';
 ---
 
 <BaseLayout title="about" description="Who is Niro Åhman">
+  <link slot="head" rel="preload" href="/niro.jpg" as="image" />
   <a slot="back" href="/">&larr; ~/index</a>
   <main class="about">
     <div class="about-body">
@@ -69,12 +71,20 @@ import BaseLayout from '../layouts/BaseLayout.astro';
         </div>
 
         <div class="links">
-          <a href="https://github.com/niroahman" target="_blank" rel="noopener noreferrer"
-            >github ↗</a
-          >
-          <a href="https://linkedin.com/in/niroahman" target="_blank" rel="noopener noreferrer"
-            >linkedin ↗</a
-          >
+          <a href="https://github.com/niroahman" target="_blank" rel="noopener noreferrer">
+            <GithubLogo
+              size={18}
+              weight="duotone"
+              style={{ verticalAlign: 'middle', marginRight: '6px' }}
+            />github ↗
+          </a>
+          <a href="https://linkedin.com/in/niroahman" target="_blank" rel="noopener noreferrer">
+            <LinkedinLogo
+              size={18}
+              weight="duotone"
+              style={{ verticalAlign: 'middle', marginRight: '6px' }}
+            />linkedin ↗
+          </a>
         </div>
       </div>
     </div>
@@ -233,6 +243,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
   }
 
   .links a {
+    display: inline-flex;
+    align-items: center;
     color: var(--phosphor-dim);
     text-decoration: none;
     font-size: 0.8rem;

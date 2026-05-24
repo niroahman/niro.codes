@@ -11,18 +11,31 @@ export async function getStaticPaths() {
 const { project } = Astro.props;
 const { Content } = await render(project);
 const { title, description, image, tech, github, demo, slideUrl } = project.data;
+
+function initials(t: string) {
+  return t
+    .split(/[\s.]+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join('');
+}
 ---
 
 <BaseLayout title={title} description={description}>
   <a slot="back" href="/projects">&larr; projects/</a>
   <main class="project-detail">
-    {
-      image && (
-        <div class="hero-wrap">
+    <div class="hero-wrap">
+      {
+        image ? (
           <img src={image} alt={title} class="hero-img" />
-        </div>
-      )
-    }
+        ) : (
+          <div class="hero-placeholder" aria-hidden="true">
+            {initials(title)}
+          </div>
+        )
+      }
+    </div>
 
     <div class="detail-body">
       <div class="detail-meta">
@@ -103,6 +116,19 @@ const { title, description, image, tech, github, demo, slideUrl } = project.data
     object-fit: cover;
     filter: grayscale(1) contrast(1.05);
     display: block;
+  }
+
+  .hero-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    font-weight: bold;
+    color: var(--phosphor-dim);
+    background: color-mix(in srgb, var(--phosphor) 5%, #050505);
+    letter-spacing: 0.05em;
   }
 
   .hero-wrap::before {

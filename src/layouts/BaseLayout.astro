@@ -15,9 +15,10 @@ const { title, description = 'Portfolio of Niro Åhman — full-stack developer'
 <html lang="en">
   <head>
     <Head title={title} description={description} />
+    <slot name="head" />
     <script is:inline>
       (function () {
-        const theme = localStorage.getItem('niro.codes:theme') || 'dark';
+        const theme = localStorage.getItem('niro.codes:theme') || 'light';
         const phosphor = localStorage.getItem('niro.codes:phosphor');
         document.documentElement.setAttribute('data-theme', theme);
         if (phosphor) document.documentElement.style.setProperty('--phosphor-raw', phosphor);

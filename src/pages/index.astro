@@ -3,6 +3,7 @@ import CRTLayout from '../layouts/CRTLayout.astro';
 // import BootSequence from '../components/BootSequence.astro';
 import AppearanceControls from '../components/AppearanceControls.astro';
 import NavPrompt from '../components/NavPrompt.astro';
+import { GithubLogo, LinkedinLogo } from '@phosphor-icons/react';
 
 const menuItems = [
   { key: '1', label: 'about.me', description: 'who is this guy', href: '/about' },
@@ -12,8 +13,8 @@ const menuItems = [
 ];
 
 const externalLinks = [
-  { key: 'gh', label: 'github ↗', href: 'https://github.com/niroahman' },
-  { key: 'li', label: 'linkedin ↗', href: 'https://linkedin.com/in/niroahman' },
+  { key: 'gh', label: 'github ↗', icon: GithubLogo, href: 'https://github.com/niroahman' },
+  { key: 'li', label: 'linkedin ↗', icon: LinkedinLogo, href: 'https://linkedin.com/in/niroahman' },
 ];
 ---
 
@@ -72,7 +73,12 @@ const externalLinks = [
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  [{link.key}] {link.label}
+                  <link.icon
+                    size={18}
+                    weight="duotone"
+                    style={{ verticalAlign: 'middle', marginRight: '6px' }}
+                  />
+                  {link.label}
                 </a>
               ))
             }
@@ -239,6 +245,8 @@ const externalLinks = [
   }
 
   .ext-link {
+    display: inline-flex;
+    align-items: center;
     color: var(--phosphor-dim);
     text-decoration: none;
     transition: color 0.15s;
@@ -287,6 +295,8 @@ const externalLinks = [
 
     .subtitle {
       white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
     }
 
     .terminal-header {
@@ -299,12 +309,13 @@ const externalLinks = [
       align-self: flex-end;
     }
 
-    .theme-arrow::before {
-      content: '↓';
-    }
-
     .theme-arrow {
       font-size: 0;
+    }
+
+    .theme-arrow::before {
+      content: '↓';
+      font-size: 0.875rem;
     }
   }
 

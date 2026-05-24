@@ -1,6 +1,6 @@
 type Route = { href: string; external: boolean; el: HTMLAnchorElement };
 
-export function initTermNav(): void {
+export function initTermNav(opts?: { onFreeInput?: (cmd: string) => void }): void {
   const routes = new Map<string, Route>();
 
   document.querySelectorAll<HTMLAnchorElement>('[data-key]').forEach((el) => {
@@ -14,7 +14,6 @@ export function initTermNav(): void {
   if (routes.size === 0) return;
 
   const keys = [...routes.keys()];
-  const maxKeyLen = Math.max(...keys.map((k) => k.length));
   const display = document.getElementById('nav-prompt-input');
   let buffer = '';
   let selectedIndex = -1;
@@ -82,8 +81,8 @@ export function initTermNav(): void {
       if (selectedIndex >= 0) {
         navigate(keys[selectedIndex]);
         setSelected(-1);
-      } else {
-        navigate(buffer);
+      } else if (!navigate(buffer)) {
+        opts?.onFreeInput?.(buffer);
       }
       buffer = '';
       updateDisplay();
@@ -94,13 +93,6 @@ export function initTermNav(): void {
 
     buffer += e.key;
     updateDisplay();
-
-    if (navigate(buffer)) return;
-
-    const hasPrefix = [...routes.keys()].some((k) => k.startsWith(buffer));
-    if (!hasPrefix || buffer.length >= maxKeyLen) {
-      buffer = '';
-      updateDisplay();
-    }
+    navigate(buffer);
   });
 }

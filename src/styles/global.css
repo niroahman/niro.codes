@@ -270,10 +270,6 @@ body.crt::after {
     border-radius: 10px;
   }
 
-  body.crt {
-    overflow-y: auto;
-  }
-
   body.crt::before,
   body.crt::after {
     inset: 12px;

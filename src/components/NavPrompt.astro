@@ -2,7 +2,8 @@
 
 ---
 
-<div id="nav-prompt" aria-live="polite" aria-label="Navigation prompt">
+<div id="nav-prompt-output" aria-live="polite" aria-label="Terminal output"></div>
+<div id="nav-prompt" aria-label="Navigation prompt">
   <span class="prompt-gt" aria-hidden="true">&gt;</span>
   <span id="nav-prompt-input"></span><span class="cursor" aria-hidden="true"></span>
 </div>
@@ -10,8 +11,63 @@
 <script>
   import { initTermNav } from '../scripts/termNav';
 
+  const STATIC_RESPONSES: Record<string, string[]> = {
+    help: ['available commands: ls, whoami, pwd, date, uname, clear', 'or press 1–4 to navigate'],
+    ls: ['about.me  projects/  blog/  now.md  NIRO.EXE'],
+    whoami: ['niro — senior full-stack developer'],
+    pwd: ['/home/niro'],
+    uname: ['NiroOS 1.0 (basement edition) — powered by caffeine and TypeScript'],
+    clear: [],
+    exit: ['there is no escape.'],
+    sudo: ['nice try.'],
+    vim: ['now you are stuck.'],
+    ':q': ['wrong terminal.'],
+    ':q!': ['still wrong terminal.'],
+    'rm -rf /': ['...nice try.'],
+    hello: ['hello, world.'],
+    hi: ['hey. looking for something?'],
+  };
+
+  const MAX_LINES = 4;
+  let outputLines: string[] = [];
+
+  function renderOutput() {
+    const el = document.getElementById('nav-prompt-output');
+    if (!el) return;
+    const visible = outputLines.slice(-MAX_LINES);
+    el.innerHTML = visible
+      .map((l) => `<div class="out-line">${l.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>`)
+      .join('');
+    el.classList.toggle('has-output', visible.length > 0);
+  }
+
+  function handleCommand(raw: string) {
+    const cmd = raw.trim().toLowerCase();
+    if (!cmd) return;
+
+    if (cmd === 'clear') {
+      outputLines = [];
+      renderOutput();
+      return;
+    }
+
+    if (cmd === 'date') {
+      outputLines.push(new Date().toUTCString());
+      renderOutput();
+      return;
+    }
+
+    const response = STATIC_RESPONSES[cmd];
+    if (response !== undefined) {
+      outputLines.push(...response);
+    } else {
+      outputLines.push(`command not found: ${raw.trim()}`);
+    }
+    renderOutput();
+  }
+
   function activate() {
-    initTermNav();
+    initTermNav({ onFreeInput: handleCommand });
     document.getElementById('nav-prompt')?.classList.add('visible');
   }
 
@@ -32,11 +88,29 @@
 </script>
 
 <style>
+  #nav-prompt-output {
+    display: none;
+    flex-direction: column;
+    gap: 0.15rem;
+    font-size: 0.85rem;
+    color: var(--phosphor-dim);
+    padding-bottom: 0.4rem;
+  }
+
+  #nav-prompt-output.has-output {
+    display: flex;
+  }
+
+  .out-line {
+    opacity: 0.8;
+    line-height: 1.5;
+  }
+
   #nav-prompt {
     display: flex;
     align-items: center;
     gap: 0.4rem;
-    font-size: 0.875rem;
+    font-size: 1.25rem;
     margin-top: auto;
     padding-top: 1.5rem;
     opacity: 0;
@@ -52,8 +126,9 @@
   }
 
   @media (max-width: 600px) {
-    #nav-prompt {
-      display: none;
+    #nav-prompt,
+    #nav-prompt-output {
+      display: none !important;
     }
   }
 </style>
