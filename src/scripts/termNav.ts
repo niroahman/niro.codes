@@ -1,4 +1,4 @@
-type Route = { href: string; external: boolean };
+type Route = { href: string; external: boolean; el: HTMLAnchorElement };
 
 export function initTermNav(): void {
   const routes = new Map<string, Route>();
@@ -7,17 +7,28 @@ export function initTermNav(): void {
     routes.set(el.dataset.key!, {
       href: el.getAttribute('href') ?? '/',
       external: el.target === '_blank',
+      el,
     });
   });
 
   if (routes.size === 0) return;
 
-  const maxKeyLen = Math.max(...[...routes.keys()].map((k) => k.length));
+  const keys = [...routes.keys()];
+  const maxKeyLen = Math.max(...keys.map((k) => k.length));
   const display = document.getElementById('nav-prompt-input');
   let buffer = '';
+  let selectedIndex = -1;
 
   function updateDisplay(): void {
     if (display) display.textContent = buffer;
+  }
+
+  function setSelected(index: number): void {
+    routes.forEach(({ el }) => el.removeAttribute('data-selected'));
+    selectedIndex = index;
+    if (index >= 0 && index < keys.length) {
+      routes.get(keys[index])?.el.setAttribute('data-selected', '');
+    }
   }
 
   function navigate(key: string): boolean {
@@ -36,9 +47,22 @@ export function initTermNav(): void {
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.ctrlKey || e.altKey || e.metaKey) return;
 
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setSelected((selectedIndex + 1) % keys.length);
+      return;
+    }
+
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setSelected((selectedIndex - 1 + keys.length) % keys.length);
+      return;
+    }
+
     if (e.key === 'Escape') {
       buffer = '';
       updateDisplay();
+      setSelected(-1);
       return;
     }
 
@@ -49,7 +73,12 @@ export function initTermNav(): void {
     }
 
     if (e.key === 'Enter') {
-      navigate(buffer);
+      if (selectedIndex >= 0) {
+        navigate(keys[selectedIndex]);
+        setSelected(-1);
+      } else {
+        navigate(buffer);
+      }
       buffer = '';
       updateDisplay();
       return;

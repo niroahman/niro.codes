@@ -14,11 +14,8 @@ const { title, description, image, tech, github, demo, slideUrl } = project.data
 ---
 
 <BaseLayout title={title} description={description}>
+  <a slot="back" href="/projects">&larr; projects/</a>
   <main class="project-detail">
-    <header class="page-header">
-      <a href="/projects" class="back">&larr; projects/</a>
-    </header>
-
     {
       image && (
         <div class="hero-wrap">

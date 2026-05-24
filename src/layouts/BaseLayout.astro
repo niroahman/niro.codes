@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import Head from '../components/Head.astro';
+import AppearanceControls from '../components/AppearanceControls.astro';
 
 interface Props {
   title: string;
@@ -23,9 +24,23 @@ const { title, description = 'Portfolio of Niro Åhman — full-stack developer'
       })();
     </script>
   </head>
+  <script>
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key !== 'Backspace' && e.key !== 'Escape') return;
+      const tag = (e.target as HTMLElement).tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA' || (e.target as HTMLElement).isContentEditable)
+        return;
+      e.preventDefault();
+      history.back();
+    });
+  </script>
   <body>
     <a href="#main-content" class="skip-link">skip to content</a>
     <div class="base-shell">
+      <div class="base-topbar">
+        <slot name="back" />
+        <AppearanceControls />
+      </div>
       <div id="main-content" tabindex="-1">
         <slot />
       </div>

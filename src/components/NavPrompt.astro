@@ -10,9 +10,20 @@
 <script>
   import { initTermNav } from '../scripts/termNav';
 
-  document.addEventListener('bootcomplete', () => {
+  function activate() {
     initTermNav();
     document.getElementById('nav-prompt')?.classList.add('visible');
+  }
+
+  if ((window as Window & { __bootComplete?: boolean }).__bootComplete) {
+    activate();
+  } else {
+    document.addEventListener('bootcomplete', activate, { once: true });
+  }
+
+  // bfcache restore (back/forward navigation)
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted) activate();
   });
 </script>
 

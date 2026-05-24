@@ -11,12 +11,8 @@ function formatDate(d: Date) {
 ---
 
 <BaseLayout title="blog" description="Thoughts and writeups by Niro Åhman">
+  <a slot="back" href="/">&larr; ~/index</a>
   <main class="blog">
-    <header class="page-header">
-      <a href="/" class="back">&larr; ~/index</a>
-      <span class="breadcrumb">blog.log</span>
-    </header>
-
     <ul class="post-list">
       {
         posts.map((p) => (

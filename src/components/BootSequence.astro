@@ -43,17 +43,16 @@ const { lines = defaultLines, lineDelay = 110 } = Astro.props;
     document.dispatchEvent(new CustomEvent('bootcomplete'));
   }
 
-  if (sessionStorage.getItem('niro.codes:booted')) {
-    el.classList.add('skip');
-    // Defer one tick so index.astro listener is registered first
+  const navEntry = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+  const isBackForward = navEntry?.type === 'back_forward';
+
+  if (isBackForward) {
+    el.style.display = 'none';
     setTimeout(dispatch, 0);
   } else {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const totalMs = reduced ? 0 : lineCount * lineDelay + 250;
-    setTimeout(() => {
-      sessionStorage.setItem('niro.codes:booted', '1');
-      dispatch();
-    }, totalMs);
+    setTimeout(dispatch, totalMs);
   }
 </script>
 
@@ -67,11 +66,6 @@ const { lines = defaultLines, lineDelay = 110 } = Astro.props;
     margin: 0;
     opacity: 0;
     animation: appear 220ms ease-out forwards;
-  }
-
-  #boot-sequence.skip .boot-line {
-    animation: none;
-    opacity: 0;
   }
 
   @media (prefers-reduced-motion: reduce) {

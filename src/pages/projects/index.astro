@@ -11,12 +11,8 @@ const projects = all.sort((a, b) => {
 ---
 
 <BaseLayout title="projects" description="Things Niro has built">
+  <a slot="back" href="/">&larr; ~/index</a>
   <main class="projects">
-    <header class="page-header">
-      <a href="/" class="back">&larr; ~/index</a>
-      <span class="breadcrumb">projects/</span>
-    </header>
-
     <ul class="project-list">
       {
         projects.map((p) => (

@@ -5,12 +5,8 @@ const updated = '2026-05-23';
 ---
 
 <BaseLayout title="/now" description="What Niro is doing right now">
+  <a slot="back" href="/">&larr; ~/index</a>
   <main class="now">
-    <header class="page-header">
-      <a href="/" class="back">&larr; ~/index</a>
-      <span class="breadcrumb">/now</span>
-    </header>
-
     <p class="updated">last updated: {updated}</p>
 
     <div class="now-body">
