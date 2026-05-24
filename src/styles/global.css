@@ -55,6 +55,31 @@ body {
     0 0 0 2px rgba(255 255 255 / 0.04);
 }
 
+@media (max-width: 600px) {
+  body {
+    margin: 12px;
+    height: calc(100dvh - 24px);
+    border-radius: 10px;
+    overflow-y: auto;
+  }
+
+  body.crt::before,
+  body.crt::after {
+    inset: 12px;
+    border-radius: 10px;
+  }
+
+  .base-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+
+  .base-topbar .appearance-controls {
+    align-self: flex-end;
+  }
+}
+
 /* ── Focus visible ── */
 :focus-visible {
   outline: 1px solid var(--phosphor);

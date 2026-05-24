@@ -44,7 +44,9 @@ function formatDate(d: Date) {
 <BaseLayout title={`tag: ${display}`} description={`Posts and projects tagged ${display}`}>
   <a slot="back" href="/">&larr; ~/index</a>
   <main class="tag-page">
-    <h1 class="tag-heading"><span class="tag-prefix">#</span>{display}</h1>
+    <h1 class="tag-heading">
+      <span class="tag-prefix">[</span>{display}<span class="tag-prefix">]</span>
+    </h1>
 
     <div class="tag-body">
       <section class="tag-section">

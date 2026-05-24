@@ -273,6 +273,22 @@ const externalLinks = [
     animation: flicker 9s infinite;
   }
 
+  @media (max-width: 600px) {
+    .logo {
+      font-size: 5.5px;
+    }
+
+    .terminal-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.4rem;
+    }
+
+    .terminal-header :global(.appearance-controls) {
+      align-self: flex-end;
+    }
+  }
+
   .subtitle {
     font-size: 0.8rem;
     color: var(--phosphor-dim);

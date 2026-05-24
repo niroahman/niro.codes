@@ -135,4 +135,11 @@ function formatDate(d: Date) {
   .tag a:hover {
     color: var(--phosphor);
   }
+
+  @media (max-width: 600px) {
+    .post-item {
+      grid-template-columns: 1fr;
+      gap: 0.25rem;
+    }
+  }
 </style>
