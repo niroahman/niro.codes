@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { Headphones, Book } from '@phosphor-icons/react';
 
 const updated = '2026-05-23';
 ---
@@ -22,23 +23,43 @@ const updated = '2026-05-23';
       <section class="now-section">
         <h2 class="section-title"><span aria-hidden="true">## </span>working on</h2>
         <ul class="now-list">
-          <li>This site — building it properly instead of fast.</li>
-          <li>Something at work I can't talk about yet.</li>
+          <li>This site. Building it slowly but steadily and thinking about new content.</li>
+          <li>Always exciting things at work I can't talk about yet.</li>
         </ul>
       </section>
 
       <section class="now-section">
         <h2 class="section-title"><span aria-hidden="true">## </span>reading</h2>
         <ul class="now-list">
-          <li>Working in Public — Nadia Eghbal</li>
+          <li>
+            <Headphones
+              size={14}
+              weight="duotone"
+              style={{ verticalAlign: 'middle', marginRight: '4px' }}
+            /> Battle Ground — Jim Butcher. You just gotta love Dresden Files
+          </li>
+          <li>
+            <Book
+              size={14}
+              weight="duotone"
+              style={{ verticalAlign: 'middle', marginRight: '4px' }}
+            /> Suffer the Little Children — Donna Leon. Brunetti and Caffè corretto
+          </li>
         </ul>
+        <p class="now-link">
+          All my read books: <a
+            href="https://hardcover.app/@vollehman/books/read"
+            target="_blank"
+            rel="noopener noreferrer">hardcover.app ↗</a
+          >
+        </p>
       </section>
 
       <section class="now-section">
         <h2 class="section-title"><span aria-hidden="true">## </span>interested in</h2>
         <ul class="now-list">
           <li>Homelab expansion — more Proxmox nodes, proper network segmentation.</li>
-          <li>Rust — not seriously yet, but circling it.</li>
+          <li>Python and GO. AI and how to use it to improve my output.</li>
         </ul>
       </section>
     </div>
@@ -105,5 +126,22 @@ const updated = '2026-05-23';
   .now-list li::before {
     content: '– ';
     color: var(--phosphor-dim);
+  }
+
+  .now-link {
+    margin: 0.75rem 0 0;
+    font-size: 0.8rem;
+    color: var(--phosphor-dim);
+    opacity: 0.85;
+  }
+
+  .now-link a {
+    color: var(--phosphor-dim);
+    text-decoration: none;
+    transition: color 0.15s;
+  }
+
+  .now-link a:hover {
+    color: var(--phosphor);
   }
 </style>
