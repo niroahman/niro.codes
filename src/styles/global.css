@@ -49,6 +49,7 @@ body {
   margin: 40px;
   border-radius: 16px;
   overflow: hidden;
+  overscroll-behavior: none;
   box-shadow:
     inset 0 0 120px rgba(0 0 0 / 0.6),
     inset 0 0 40px rgba(0 0 0 / 0.4),
@@ -267,8 +268,10 @@ body.crt::after {
     margin: 12px;
     height: calc(100dvh - 24px);
     border-radius: 10px;
+  }
+
+  body.crt {
     overflow-y: auto;
-    overscroll-behavior: none;
   }
 
   body.crt::before,

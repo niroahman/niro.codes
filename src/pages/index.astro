@@ -20,7 +20,7 @@ const externalLinks = [
 <CRTLayout title="niro.codes">
   <div class="terminal">
     <header class="terminal-header">
-      <span class="header-label">Choose your theme --&gt;</span>
+      <span class="header-label">Choose your theme <span class="theme-arrow">--&gt;</span></span>
       <AppearanceControls />
     </header>
 
@@ -42,7 +42,9 @@ const externalLinks = [
 ██║ ╚████║██║██║  ██║╚██████╔╝    ██║  ██║██║  ██║██║ ╚═╝ ██║██║  ██║██║ ╚████║
 ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝ ╚═════╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝</pre>
             <p class="subtitle">
-              senior deep-stack developer with &lt;3 &nbsp;·&nbsp; Akaa, Finland
+              senior deep-stack developer with &lt;3<span class="subtitle-location"
+                >&nbsp;·&nbsp; Akaa, Finland</span
+              >
             </p>
           </div>
 
@@ -278,6 +280,15 @@ const externalLinks = [
       font-size: 5.5px;
     }
 
+    .menu-item,
+    .game-entry {
+      grid-template-columns: 2.5rem 7rem 1fr;
+    }
+
+    .subtitle {
+      white-space: normal;
+    }
+
     .terminal-header {
       flex-direction: column;
       align-items: flex-start;
@@ -286,6 +297,14 @@ const externalLinks = [
 
     .terminal-header :global(.appearance-controls) {
       align-self: flex-end;
+    }
+
+    .theme-arrow::before {
+      content: '↓';
+    }
+
+    .theme-arrow {
+      font-size: 0;
     }
   }
 
@@ -297,5 +316,9 @@ const externalLinks = [
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  .subtitle-location {
+    white-space: nowrap;
   }
 </style>
