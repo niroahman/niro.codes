@@ -65,6 +65,10 @@ body {
   outline: none;
 }
 
+body.crt #main-content {
+  height: 100%;
+}
+
 /* ── Skip link ── */
 .skip-link {
   position: absolute;
@@ -225,6 +229,12 @@ body.crt::after {
   overflow-y: auto;
   position: relative;
   scrollbar-width: none;
+  display: flex;
+  flex-direction: column;
+}
+
+.base-shell > #main-content {
+  flex: 1;
 }
 
 .base-shell::-webkit-scrollbar {

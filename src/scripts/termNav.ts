@@ -44,6 +44,12 @@ export function initTermNav(): void {
     return true;
   }
 
+  routes.forEach(({ el }, key) => {
+    const index = keys.indexOf(key);
+    el.addEventListener('mouseenter', () => setSelected(index));
+    el.addEventListener('mouseleave', () => setSelected(-1));
+  });
+
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.ctrlKey || e.altKey || e.metaKey) return;
 

@@ -15,16 +15,20 @@
     document.getElementById('nav-prompt')?.classList.add('visible');
   }
 
-  if ((window as Window & { __bootComplete?: boolean }).__bootComplete) {
-    activate();
-  } else {
-    document.addEventListener('bootcomplete', activate, { once: true });
-  }
+  activate();
 
   // bfcache restore (back/forward navigation)
   window.addEventListener('pageshow', (e) => {
     if (e.persisted) activate();
   });
+
+  /* BOOT SEQUENCE — uncomment to restore (remove activate() above)
+  if ((window as Window & { __bootComplete?: boolean }).__bootComplete) {
+    activate();
+  } else {
+    document.addEventListener('bootcomplete', activate, { once: true });
+  }
+  */
 </script>
 
 <style>

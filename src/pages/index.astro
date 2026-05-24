@@ -1,14 +1,14 @@
 ---
 import CRTLayout from '../layouts/CRTLayout.astro';
-import BootSequence from '../components/BootSequence.astro';
+// import BootSequence from '../components/BootSequence.astro';
 import AppearanceControls from '../components/AppearanceControls.astro';
 import NavPrompt from '../components/NavPrompt.astro';
 
 const menuItems = [
   { key: '1', label: 'about.me', description: 'who is this guy', href: '/about' },
   { key: '2', label: 'projects/', description: "things i've built", href: '/projects' },
-  { key: '3', label: 'blog.log', description: 'thoughts & writeups', href: '/blog' },
-  { key: '4', label: '/now', description: "what i'm doing now", href: '/now' },
+  { key: '3', label: 'blog/', description: 'thoughts & writeups', href: '/blog' },
+  { key: '4', label: 'now.md', description: "what i'm doing now", href: '/now' },
 ];
 
 const externalLinks = [
@@ -20,28 +20,29 @@ const externalLinks = [
 <CRTLayout title="niro.codes">
   <div class="terminal">
     <header class="terminal-header">
-      <span class="glow">NIRO.CODES</span>
+      <span class="header-label">Choose your theme --&gt;</span>
       <AppearanceControls />
     </header>
 
     <div class="terminal-body">
-      <BootSequence />
+      {/* <BootSequence /> */}
 
       <div class="content-center">
         <nav id="home-menu" aria-label="Main navigation">
           <div class="logo-block">
             <pre
               class="logo"
-              aria-label="NIRO">
- ███╗   ██╗██╗██████╗  ██████╗
- ████╗  ██║██║██╔══██╗██╔═══██╗
- ██╔██╗ ██║██║██████╔╝██║   ██║
- ██║╚██╗██║██║██╔══██╗██║   ██║
- ██║ ╚████║██║██║  ██║╚██████╔╝
- ╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝ ╚═════╝</pre>
+              aria-label="NIRO ÅHMAN">
+                                    ██╗
+                                    ╚═╝
+███╗   ██╗██╗██████╗  ██████╗      █████╗ ██╗  ██╗███╗   ███╗ █████╗ ███╗   ██╗
+████╗  ██║██║██╔══██╗██╔═══██╗    ██╔══██╗██║  ██║████╗ ████║██╔══██╗████╗  ██║
+██╔██╗ ██║██║██████╔╝██║   ██║    ███████║███████║██╔████╔██║███████║██╔██╗ ██║
+██║╚██╗██║██║██╔══██╗██║   ██║    ██╔══██║██╔══██║██║╚██╔╝██║██╔══██║██║╚██╗██║
+██║ ╚████║██║██║  ██║╚██████╔╝    ██║  ██║██║  ██║██║ ╚═╝ ██║██║  ██║██║ ╚████║
+╚═╝  ╚═══╝╚═╝╚═╝  ╚═╝ ╚═════╝     ╚═╝  ╚═╝╚═╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝</pre>
             <p class="subtitle">
-              senior full-stack dev &nbsp;·&nbsp; tampere, finland &nbsp;·&nbsp; react / next.js /
-              go / aws
+              senior deep-stack developer with &lt;3 &nbsp;·&nbsp; Akaa, Finland
             </p>
           </div>
 
@@ -89,6 +90,9 @@ const externalLinks = [
 </CRTLayout>
 
 <script>
+  document.getElementById('home-menu')?.classList.add('visible');
+
+  /* BOOT SEQUENCE — uncomment to restore
   function handleBootComplete() {
     const boot = document.getElementById('boot-sequence');
     const menu = document.getElementById('home-menu');
@@ -118,10 +122,7 @@ const externalLinks = [
   } else {
     document.addEventListener('bootcomplete', handleBootComplete, { once: true });
   }
-
-  window.addEventListener('pageshow', (e) => {
-    if (e.persisted) handleBootComplete();
-  });
+  */
 </script>
 
 <style>
@@ -141,6 +142,16 @@ const externalLinks = [
     align-items: center;
     margin-bottom: 2rem;
     font-size: 1rem;
+  }
+
+  .header-label {
+    font-size: 0.875rem;
+    color: var(--phosphor);
+    opacity: 0.7;
+  }
+
+  :global([data-theme='light']) .header-label {
+    color: color-mix(in oklch, var(--phosphor) 80%, black);
   }
 
   .terminal-body {
@@ -251,21 +262,24 @@ const externalLinks = [
   }
 
   .logo {
-    font-size: 10px;
+    font-size: 8px;
     line-height: 1.2;
     white-space: pre;
     color: var(--phosphor);
     text-shadow:
       0 0 8px var(--phosphor),
       0 0 20px color-mix(in srgb, var(--phosphor) 40%, transparent);
-    margin: 0 0 0.75rem;
+    margin: 0 0 1.5rem;
     animation: flicker 9s infinite;
   }
 
   .subtitle {
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     color: var(--phosphor-dim);
     border-bottom: 1px solid var(--dim);
     padding-bottom: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 </style>

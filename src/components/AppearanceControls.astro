@@ -37,7 +37,8 @@ const swatches = [
   }
 
   function syncLabel() {
-    toggle.textContent = `[${currentTheme()}]`;
+    const next = currentTheme() === 'dark' ? 'light' : 'dark';
+    toggle.textContent = `[${next}]`;
   }
 
   syncLabel();
@@ -82,8 +83,12 @@ const swatches = [
     padding: 0;
     font-family: inherit;
     font-size: inherit;
-    opacity: 0.6;
+    opacity: 0.7;
     transition: opacity 0.15s;
+  }
+
+  :global([data-theme='light']) #theme-toggle {
+    color: color-mix(in oklch, var(--phosphor) 80%, black);
   }
 
   #theme-toggle:hover {

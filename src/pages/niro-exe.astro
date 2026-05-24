@@ -1,10 +1,10 @@
 ---
-import CRTLayout from '../layouts/CRTLayout.astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<CRTLayout title="NIRO.EXE">
+<BaseLayout title="NIRO.EXE">
+  <a slot="back" href="/">&larr; ~/index</a>
   <div class="game-stub">
-    <a href="/" class="back">&larr; ~/index</a>
     <div class="center">
       <pre
         class="logo"
@@ -19,26 +19,15 @@ import CRTLayout from '../layouts/CRTLayout.astro';
       <p class="coming">coming soon</p>
     </div>
   </div>
-</CRTLayout>
+</BaseLayout>
 
 <style>
   .game-stub {
     display: flex;
     flex-direction: column;
-    height: 100dvh;
-    padding: 2rem 1.5rem;
+    height: 100%;
+    padding: 0 1.5rem 2rem;
     box-sizing: border-box;
-  }
-
-  .back {
-    font-size: 1rem;
-    color: var(--phosphor-dim);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-
-  .back:hover {
-    color: var(--phosphor);
   }
 
   .center {

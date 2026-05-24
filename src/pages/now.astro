@@ -4,41 +4,44 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const updated = '2026-05-23';
 ---
 
-<BaseLayout title="/now" description="What Niro is doing right now">
+<BaseLayout title="now.md" description="What Niro is doing right now">
   <a slot="back" href="/">&larr; ~/index</a>
   <main class="now">
+    <pre
+      class="now-logo"
+      aria-label="WHAT'S UP">
+ ██╗    ██╗██╗  ██╗ █████╗ ████████╗ ██████╗  ██╗   ██╗██████╗
+ ██║    ██║██║  ██║██╔══██╗╚══██╔══╝██╔════╝  ██║   ██║██╔══██╗
+ ██║ █╗ ██║███████║███████║   ██║   ╚█████╗   ██║   ██║██████╔╝
+ ██║███╗██║██╔══██║██╔══██║   ██║    ╚═══██╗  ██║   ██║██╔═══╝
+ ╚███╔███╔╝██║  ██║██║  ██║   ██║   ██████╔╝  ╚██████╔╝██║
+  ╚══╝╚══╝ ╚═╝  ╚═╝╚═╝  ╚═╝   ╚═╝   ╚═════╝    ╚═════╝ ╚═╝</pre>
     <p class="updated">last updated: {updated}</p>
 
     <div class="now-body">
       <section class="now-section">
-        <h2 class="section-title">working on</h2>
+        <h2 class="section-title"><span aria-hidden="true">## </span>working on</h2>
         <ul class="now-list">
           <li>This site — building it properly instead of fast.</li>
-          <li>Something at Framery I can't talk about yet.</li>
+          <li>Something at work I can't talk about yet.</li>
         </ul>
       </section>
 
       <section class="now-section">
-        <h2 class="section-title">reading</h2>
+        <h2 class="section-title"><span aria-hidden="true">## </span>reading</h2>
         <ul class="now-list">
           <li>Working in Public — Nadia Eghbal</li>
         </ul>
       </section>
 
       <section class="now-section">
-        <h2 class="section-title">interested in</h2>
+        <h2 class="section-title"><span aria-hidden="true">## </span>interested in</h2>
         <ul class="now-list">
           <li>Homelab expansion — more Proxmox nodes, proper network segmentation.</li>
           <li>Rust — not seriously yet, but circling it.</li>
         </ul>
       </section>
     </div>
-
-    <p class="now-footer">
-      This is a <a href="https://nownownow.com/about" target="_blank" rel="noopener noreferrer"
-        >/now page</a
-      >. Update it when life changes.
-    </p>
   </main>
 </BaseLayout>
 
@@ -50,27 +53,15 @@ const updated = '2026-05-23';
     font-size: 0.875rem;
   }
 
-  .page-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 0.75rem;
-    font-size: 0.75rem;
-  }
-
-  .back {
-    color: var(--phosphor-dim);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-
-  .back:hover {
+  .now-logo {
+    font-size: 9px;
+    line-height: 1.2;
+    white-space: pre;
     color: var(--phosphor);
-  }
-
-  .breadcrumb {
-    color: var(--phosphor);
-    opacity: 0.5;
+    text-shadow:
+      0 0 8px var(--phosphor),
+      0 0 20px color-mix(in srgb, var(--phosphor) 40%, transparent);
+    margin: 0 0 1.5rem;
   }
 
   .updated {
@@ -86,11 +77,17 @@ const updated = '2026-05-23';
   }
 
   .section-title {
-    font-size: 0.7rem;
+    font-size: 0.875rem;
+    font-weight: bold;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--phosphor-dim);
+    color: var(--phosphor);
     margin: 0 0 0.75rem;
+  }
+
+  .section-title span {
+    color: var(--phosphor-dim);
+    font-weight: normal;
   }
 
   .now-list {
@@ -108,20 +105,5 @@ const updated = '2026-05-23';
   .now-list li::before {
     content: '– ';
     color: var(--phosphor-dim);
-  }
-
-  .now-footer {
-    margin-top: 3rem;
-    font-size: 0.75rem;
-    color: var(--phosphor-dim);
-  }
-
-  .now-footer a {
-    color: var(--phosphor-dim);
-    transition: color 0.15s;
-  }
-
-  .now-footer a:hover {
-    color: var(--phosphor);
   }
 </style>
