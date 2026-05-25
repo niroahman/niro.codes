@@ -2,43 +2,149 @@
 
 ---
 
-<div id="nav-prompt-output" aria-live="polite" aria-label="Terminal output"></div>
-<div id="nav-prompt" aria-label="Navigation prompt">
-  <span class="prompt-gt" aria-hidden="true">&gt;</span>
-  <span id="nav-prompt-input"></span><span class="cursor" aria-hidden="true"></span>
+<div class="nav-prompt-wrap">
+  <div id="nav-prompt-output" aria-live="polite" aria-label="Terminal output"></div>
+  <div id="nav-prompt" aria-label="Navigation prompt">
+    <span class="prompt-gt" aria-hidden="true">&gt;</span>
+    <span id="nav-prompt-input"></span><span class="cursor" aria-hidden="true"></span>
+  </div>
 </div>
 
 <script>
   import { initTermNav } from '../scripts/termNav';
 
+  const FILE_MAP: Record<string, string> = {
+    'about.me': '1',
+    'projects/': '2',
+    'blog/': '3',
+    'now.md': '4',
+    'niro.exe': 'play',
+  };
+
+  const ALL_LS = ['about.me', 'projects/', 'blog/', 'now.md', 'niro.exe'];
+  const LS_DISPLAY: Record<string, string> = { 'niro.exe': 'NIRO.EXE' };
+
   const STATIC_RESPONSES: Record<string, string[]> = {
-    help: ['available commands: ls, whoami, pwd, date, uname, clear', 'or press 1–4 to navigate'],
-    ls: ['about.me  projects/  blog/  now.md  NIRO.EXE'],
+    help: [
+      'available commands: ls [-la], whoami, pwd, date, uname, rm, neofetch, git log, fortune, cat, clear',
+      'or press 1–4 to navigate',
+    ],
     whoami: ['niro — senior full-stack developer'],
     pwd: ['/home/niro'],
     uname: ['NiroOS 1.0 (basement edition) — powered by caffeine and TypeScript'],
-    clear: [],
+    reload: [],
+    reboot: [],
     exit: ['there is no escape.'],
     sudo: ['nice try.'],
     vim: ['now you are stuck.'],
     ':q': ['wrong terminal.'],
     ':q!': ['still wrong terminal.'],
-    'rm -rf /': ['...nice try.'],
     hello: ['hello, world.'],
     hi: ['hey. looking for something?'],
   };
 
-  const MAX_LINES = 4;
-  let outputLines: string[] = [];
+  const NEOFETCH_LINES = [
+    '███╗   ██╗██████╗    niro@basement',
+    '████╗  ██║██╔══██╗   ─────────────────────',
+    '██╔██╗ ██║██████╔╝   OS: NiroOS 1.0 (basement edition)',
+    '██║╚██╗██║██╔══██╗   Host: Akaa, Finland',
+    '██║ ╚████║██║  ██║   Uptime: ~10 years',
+    '╚═╝  ╚═══╝╚═╝  ╚═╝  CPU: i9 · RAM: 64GB',
+    '                     Stack: React · Go · AWS',
+    '                     Off-duty: PoE2 · FS25 · ☕',
+  ];
+
+  const GIT_LOG_LINES = [
+    '3f9a2d1  fix: forgot coffee, fixed immediately',
+    '8b4e7c2  feat: three daughters (breaking change)',
+    '1a9f3e4  feat: survived Nokia C++ Linux drivers',
+    'a2c5f8b  chore: moved to basement office (permanent)',
+    'd9e3b1f  fix: work/life balance (wip)',
+  ];
+
+  const FORTUNES = [
+    'It works on my machine.  — Every developer, always',
+    'rm -rf was a mistake.  — Unknown',
+    'There are 10 types of people: those who know binary, and those who do not.',
+    'The best code is no code at all.',
+    "It's not a bug, it's an undocumented feature.",
+    'Coffee: compile time optimization for humans.',
+    'sudo make me a sandwich.',
+    'Weeks of coding can save hours of planning.',
+    'A language that does not affect the way you think is not worth knowing.  — Perlis',
+  ];
+
+  const MAX_LINES = 10;
+  type Line = { text: string; isCmd: boolean };
+  let outputLines: Line[] = [];
+  const removedFiles = new Set<string>();
+  let nav: { removeRoute: (key: string) => void; destroy: () => void } | null = null;
+
+  function escape(s: string) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
 
   function renderOutput() {
     const el = document.getElementById('nav-prompt-output');
     if (!el) return;
     const visible = outputLines.slice(-MAX_LINES);
     el.innerHTML = visible
-      .map((l) => `<div class="out-line">${l.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</div>`)
+      .map((l) =>
+        l.isCmd
+          ? `<div class="out-cmd"><span class="out-gt">&gt;</span> ${escape(l.text)}</div>`
+          : `<div class="out-line">${escape(l.text)}</div>`
+      )
       .join('');
-    el.classList.toggle('has-output', visible.length > 0);
+  }
+
+  function nukeEverything() {
+    const overlay = document.createElement('div');
+    overlay.id = 'nuke-overlay';
+    overlay.innerHTML = `<div class="nuke-content"><pre class="nuke-why">██╗    ██╗██╗  ██╗██╗   ██╗
+██║    ██║██║  ██║╚██╗ ██╔╝
+██║ █╗ ██║███████║ ╚████╔╝
+██║███╗██║██╔══██║  ╚██╔╝
+╚███╔███╔╝██║  ██║   ██║
+ ╚══╝╚══╝ ╚═╝  ╚═╝   ╚═╝  </pre><p class="nuke-sub">???  :(</p></div>`;
+    const container = document.querySelector<HTMLElement>('.terminal') ?? document.body;
+    container.style.position = 'relative';
+    container.appendChild(overlay);
+    document.getElementById('home-menu')?.classList.add('nuke-chaos');
+
+    setTimeout(() => {
+      outputLines.push({ text: 'reload to restart.', isCmd: false });
+      renderOutput();
+    }, 4000);
+  }
+
+  function openSecret() {
+    const modal = document.createElement('div');
+    modal.id = 'secret-modal';
+    modal.innerHTML = `
+      <div class="secret-backdrop"></div>
+      <div class="secret-content">
+        <button class="secret-close" aria-label="Close">× close</button>
+        <iframe
+          src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1"
+          allow="autoplay; encrypted-media"
+          allowfullscreen
+        ></iframe>
+      </div>`;
+    document.body.appendChild(modal);
+
+    const close = () => {
+      modal.remove();
+      document.removeEventListener('keydown', onKey, true);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        close();
+      }
+    };
+    modal.querySelector('.secret-backdrop')?.addEventListener('click', close);
+    modal.querySelector('.secret-close')?.addEventListener('click', close);
+    document.addEventListener('keydown', onKey, true);
   }
 
   function handleCommand(raw: string) {
@@ -51,23 +157,107 @@
       return;
     }
 
+    outputLines.push({ text: raw.trim(), isCmd: true });
+
+    if (cmd === 'rm' || cmd.startsWith('rm ')) {
+      const args = cmd.slice(2).trim();
+      if (args === '-rf /' || args === '-rf/' || args === '-r -f /') {
+        renderOutput();
+        nukeEverything();
+        return;
+      }
+      if (!args) {
+        outputLines.push({ text: 'rm: missing operand', isCmd: false });
+      } else if (FILE_MAP[args] !== undefined && !removedFiles.has(args)) {
+        removedFiles.add(args);
+        nav?.removeRoute(FILE_MAP[args]);
+        outputLines.push({ text: `removed '${args}'`, isCmd: false });
+      } else {
+        outputLines.push({ text: `rm: ${args}: No such file or directory`, isCmd: false });
+      }
+      renderOutput();
+      return;
+    }
+
+    if (cmd === 'classified' || cmd === './classified' || cmd === 'cat .classified') {
+      openSecret();
+      renderOutput();
+      return;
+    }
+
+    if (cmd === 'reload' || cmd === 'reboot') {
+      renderOutput();
+      window.location.reload();
+      return;
+    }
+
+    if (cmd === 'neofetch') {
+      NEOFETCH_LINES.forEach((l) => outputLines.push({ text: l, isCmd: false }));
+      renderOutput();
+      return;
+    }
+
+    if (cmd === 'git' || cmd.startsWith('git ')) {
+      const sub = cmd.slice(3).trim();
+      if (sub === 'log' || sub === 'log --oneline') {
+        GIT_LOG_LINES.forEach((l) => outputLines.push({ text: l, isCmd: false }));
+      } else if (sub === 'status') {
+        outputLines.push({ text: 'On branch main', isCmd: false });
+        outputLines.push({ text: 'nothing to commit, working tree clean', isCmd: false });
+      } else if (sub === 'push') {
+        outputLines.push({ text: 'Everything up-to-date', isCmd: false });
+      } else {
+        outputLines.push({ text: `git: '${sub}' is not a git command`, isCmd: false });
+      }
+      renderOutput();
+      return;
+    }
+
+    if (cmd === 'fortune') {
+      const f = FORTUNES[Math.floor(Math.random() * FORTUNES.length)];
+      outputLines.push({ text: f, isCmd: false });
+      renderOutput();
+      return;
+    }
+
+    if (cmd === 'ls') {
+      const visible = ALL_LS.filter((f) => !removedFiles.has(f));
+      outputLines.push({
+        text: visible.length ? visible.map((f) => LS_DISPLAY[f] ?? f).join('  ') : '(empty)',
+        isCmd: false,
+      });
+      renderOutput();
+      return;
+    }
+
+    if (cmd === 'ls -la' || cmd === 'ls -al' || cmd === 'ls -a') {
+      const visible = ALL_LS.filter((f) => !removedFiles.has(f));
+      visible.forEach((f) =>
+        outputLines.push({ text: `-rw-r--r--  niro  ${LS_DISPLAY[f] ?? f}`, isCmd: false })
+      );
+      outputLines.push({ text: '----------  ?????  .classified', isCmd: false });
+      renderOutput();
+      return;
+    }
+
     if (cmd === 'date') {
-      outputLines.push(new Date().toUTCString());
+      outputLines.push({ text: new Date().toUTCString(), isCmd: false });
       renderOutput();
       return;
     }
 
     const response = STATIC_RESPONSES[cmd];
     if (response !== undefined) {
-      outputLines.push(...response);
+      response.forEach((r) => outputLines.push({ text: r, isCmd: false }));
     } else {
-      outputLines.push(`command not found: ${raw.trim()}`);
+      outputLines.push({ text: `command not found: ${raw.trim()}`, isCmd: false });
     }
     renderOutput();
   }
 
   function activate() {
-    initTermNav({ onFreeInput: handleCommand });
+    nav?.destroy();
+    nav = initTermNav({ onFreeInput: handleCommand });
     document.getElementById('nav-prompt')?.classList.add('visible');
   }
 
@@ -87,23 +277,172 @@
   */
 </script>
 
+<style is:global>
+  @keyframes nuke-fadein {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes nuke-melt {
+    0% {
+      opacity: 1;
+      transform: none;
+      filter: none;
+    }
+    40% {
+      opacity: 0.5;
+      transform: skewX(1.5deg) translateY(6px);
+      filter: blur(2px);
+    }
+    100% {
+      opacity: 0;
+      transform: skewX(6deg) translateY(40px);
+      filter: blur(10px);
+    }
+  }
+
+  @keyframes nuke-flicker-text {
+    0%,
+    18%,
+    20%,
+    52%,
+    54%,
+    100% {
+      opacity: 1;
+    }
+    19%,
+    53% {
+      opacity: 0.2;
+    }
+  }
+
+  #nuke-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    z-index: 9;
+    animation: nuke-fadein 0.4s forwards;
+    pointer-events: none;
+  }
+
+  .nuke-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+  }
+
+  .nuke-why {
+    color: var(--phosphor);
+    font-size: 9px;
+    line-height: 1.2;
+    white-space: pre;
+    text-shadow:
+      0 0 10px var(--phosphor),
+      0 0 30px color-mix(in srgb, var(--phosphor) 50%, transparent);
+    margin: 0;
+  }
+
+  .nuke-sub {
+    color: var(--phosphor);
+    font-size: 1.5rem;
+    letter-spacing: 0.15em;
+    white-space: pre;
+    text-shadow: 0 0 15px var(--phosphor);
+    margin: 0;
+  }
+
+  #home-menu.nuke-chaos {
+    animation: nuke-melt 3.5s forwards;
+    pointer-events: none;
+  }
+
+  #secret-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .secret-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.88);
+  }
+
+  .secret-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 0.5rem;
+  }
+
+  .secret-content iframe {
+    width: min(640px, 92vw);
+    height: min(360px, 51.75vw);
+    border: none;
+    display: block;
+  }
+
+  .secret-close {
+    background: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0.2rem 0.75rem;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 0.8rem;
+    transition: color 0.15s;
+  }
+
+  .secret-close:hover {
+    color: #fff;
+  }
+</style>
+
 <style>
   #nav-prompt-output {
-    display: none;
+    display: flex;
     flex-direction: column;
+    justify-content: flex-end;
+    height: 9rem;
+    overflow: hidden;
     gap: 0.15rem;
     font-size: 0.85rem;
     color: var(--phosphor-dim);
     padding-bottom: 0.4rem;
   }
 
-  #nav-prompt-output.has-output {
-    display: flex;
+  .out-cmd {
+    color: var(--phosphor);
+    opacity: 0.9;
+    line-height: 1.5;
+  }
+
+  .out-gt {
+    opacity: 0.5;
   }
 
   .out-line {
-    opacity: 0.8;
+    opacity: 0.7;
     line-height: 1.5;
+  }
+
+  .nav-prompt-wrap {
+    display: flex;
+    flex-direction: column;
+    margin-top: auto;
   }
 
   #nav-prompt {
@@ -111,8 +450,6 @@
     align-items: center;
     gap: 0.4rem;
     font-size: 1.25rem;
-    margin-top: auto;
-    padding-top: 1.5rem;
     opacity: 0;
     transition: opacity 300ms ease-out;
   }
@@ -126,8 +463,7 @@
   }
 
   @media (max-width: 600px) {
-    #nav-prompt,
-    #nav-prompt-output {
+    .nav-prompt-wrap {
       display: none !important;
     }
   }

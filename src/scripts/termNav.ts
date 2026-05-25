@@ -1,9 +1,13 @@
 type Route = { href: string; external: boolean; el: HTMLAnchorElement };
 
-export function initTermNav(opts?: { onFreeInput?: (cmd: string) => void }): void {
+export function initTermNav(opts?: { onFreeInput?: (cmd: string) => void }): {
+  removeRoute: (key: string) => void;
+  destroy: () => void;
+} {
   const routes = new Map<string, Route>();
 
   document.querySelectorAll<HTMLAnchorElement>('[data-key]').forEach((el) => {
+    if (el.style.display === 'none') return;
     routes.set(el.dataset.key!, {
       href: el.getAttribute('href') ?? '/',
       external: el.target === '_blank',
@@ -11,7 +15,7 @@ export function initTermNav(opts?: { onFreeInput?: (cmd: string) => void }): voi
     });
   });
 
-  if (routes.size === 0) return;
+  if (routes.size === 0) return { removeRoute: () => {}, destroy: () => {} };
 
   const keys = [...routes.keys()];
   const display = document.getElementById('nav-prompt-input');
@@ -49,7 +53,7 @@ export function initTermNav(opts?: { onFreeInput?: (cmd: string) => void }): voi
     el.addEventListener('mouseleave', () => setSelected(-1));
   });
 
-  document.addEventListener('keydown', (e: KeyboardEvent) => {
+  const handleKeydown = (e: KeyboardEvent) => {
     if (e.ctrlKey || e.altKey || e.metaKey) return;
 
     if (e.key === 'ArrowDown') {
@@ -94,5 +98,24 @@ export function initTermNav(opts?: { onFreeInput?: (cmd: string) => void }): voi
     buffer += e.key;
     updateDisplay();
     navigate(buffer);
-  });
+  };
+
+  document.addEventListener('keydown', handleKeydown);
+
+  function removeRoute(key: string): void {
+    const route = routes.get(key);
+    if (!route) return;
+    route.el.style.display = 'none';
+    routes.delete(key);
+    const idx = keys.indexOf(key);
+    if (idx >= 0) {
+      keys.splice(idx, 1);
+      if (selectedIndex >= idx) selectedIndex = Math.max(-1, selectedIndex - 1);
+    }
+  }
+
+  return {
+    removeRoute,
+    destroy: () => document.removeEventListener('keydown', handleKeydown),
+  };
 }
