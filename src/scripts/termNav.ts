@@ -15,8 +15,6 @@ export function initTermNav(opts?: { onFreeInput?: (cmd: string) => void }): {
     });
   });
 
-  if (routes.size === 0) return { removeRoute: () => {}, destroy: () => {} };
-
   const keys = [...routes.keys()];
   const display = document.getElementById('nav-prompt-input');
   let buffer = '';
@@ -58,13 +56,13 @@ export function initTermNav(opts?: { onFreeInput?: (cmd: string) => void }): {
 
     if (e.key === 'ArrowDown') {
       e.preventDefault();
-      setSelected((selectedIndex + 1) % keys.length);
+      if (keys.length > 0) setSelected((selectedIndex + 1) % keys.length);
       return;
     }
 
     if (e.key === 'ArrowUp') {
       e.preventDefault();
-      setSelected((selectedIndex - 1 + keys.length) % keys.length);
+      if (keys.length > 0) setSelected((selectedIndex - 1 + keys.length) % keys.length);
       return;
     }
 
