@@ -205,9 +205,13 @@ body.crt #main-content {
 
 /* ── Cursor ── */
 .cursor::after {
-  content: '▋';
+  content: '';
+  display: inline-block;
+  width: 1ch;
+  height: 1.15em;
+  background: var(--phosphor);
+  vertical-align: text-bottom;
   animation: blink 1s step-end infinite;
-  color: var(--phosphor);
 }
 
 /* ── Line ── */

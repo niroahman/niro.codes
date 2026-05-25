@@ -1,7 +1,11 @@
 type Route = { href: string; external: boolean; el: HTMLAnchorElement };
 
-export function initTermNav(opts?: { onFreeInput?: (cmd: string) => void }): {
+export function initTermNav(opts?: {
+  onFreeInput?: (cmd: string) => void;
+  onTab?: (buffer: string) => void;
+}): {
   removeRoute: (key: string) => void;
+  setBuffer: (s: string) => void;
   destroy: () => void;
 } {
   const routes = new Map<string, Route>();
@@ -66,6 +70,12 @@ export function initTermNav(opts?: { onFreeInput?: (cmd: string) => void }): {
       return;
     }
 
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      opts?.onTab?.(buffer);
+      return;
+    }
+
     if (e.key === 'Escape') {
       buffer = '';
       updateDisplay();
@@ -112,8 +122,14 @@ export function initTermNav(opts?: { onFreeInput?: (cmd: string) => void }): {
     }
   }
 
+  function setBuffer(s: string): void {
+    buffer = s;
+    updateDisplay();
+  }
+
   return {
     removeRoute,
+    setBuffer,
     destroy: () => document.removeEventListener('keydown', handleKeydown),
   };
 }

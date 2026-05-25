@@ -6,7 +6,11 @@
   <div id="nav-prompt-output" aria-live="polite" aria-label="Terminal output"></div>
   <div id="nav-prompt" aria-label="Navigation prompt">
     <span class="prompt-gt" aria-hidden="true">&gt;</span>
-    <span id="nav-prompt-input"></span><span class="cursor" aria-hidden="true"></span>
+    <span id="nav-prompt-input"></span><span class="prompt-tail"
+      ><span class="cursor" aria-hidden="true"></span><span id="nav-prompt-hint" aria-hidden="true"
+        >help</span
+      ></span
+    >
   </div>
 </div>
 
@@ -37,6 +41,8 @@
     exit: ['there is no escape.'],
     sudo: ['nice try.'],
     vim: ['now you are stuck.'],
+    vi: ['now you are stuck.'],
+    nvim: ['now you are stuck.'],
     ':q': ['wrong terminal.'],
     ':q!': ['still wrong terminal.'],
     hello: ['hello, world.'],
@@ -78,7 +84,11 @@
   type Line = { text: string; isCmd: boolean };
   let outputLines: Line[] = [];
   const removedFiles = new Set<string>();
-  let nav: { removeRoute: (key: string) => void; destroy: () => void } | null = null;
+  let nav: {
+    removeRoute: (key: string) => void;
+    setBuffer: (s: string) => void;
+    destroy: () => void;
+  } | null = null;
 
   function escape(s: string) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
@@ -149,7 +159,10 @@
 
   function handleCommand(raw: string) {
     const cmd = raw.trim().toLowerCase();
-    if (!cmd) return;
+    if (!cmd) {
+      handleCommand('help');
+      return;
+    }
 
     if (cmd === 'clear') {
       outputLines = [];
@@ -257,11 +270,24 @@
 
   function activate() {
     nav?.destroy();
-    nav = initTermNav({ onFreeInput: handleCommand });
+    nav = initTermNav({
+      onFreeInput: handleCommand,
+      onTab: (buf) => {
+        if (!buf) nav?.setBuffer('help');
+      },
+    });
     document.getElementById('nav-prompt')?.classList.add('visible');
   }
 
   activate();
+
+  const navInput = document.getElementById('nav-prompt-input');
+  const hint = document.getElementById('nav-prompt-hint');
+  if (navInput && hint) {
+    new MutationObserver(() => {
+      hint.style.display = navInput.textContent ? 'none' : '';
+    }).observe(navInput, { childList: true, characterData: true, subtree: true });
+  }
 
   // bfcache restore (back/forward navigation)
   window.addEventListener('pageshow', (e) => {
@@ -460,6 +486,14 @@
 
   .prompt-gt {
     color: var(--phosphor-dim);
+  }
+
+  #nav-prompt-hint {
+    color: var(--phosphor-dim);
+    opacity: 0.35;
+    pointer-events: none;
+    user-select: none;
+    margin-left: -1ch;
   }
 
   @media (max-width: 600px) {
