@@ -1,9 +1,13 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import { buildTagList } from '../../utils/tags';
 
 const all = await getCollection('blog', ({ data }) => !data.draft);
 const posts = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const tags = buildTagList(posts.map((p) => ({ tags: p.data.tags ?? [] })));
 
 function formatDate(d: Date) {
   return d.toISOString().slice(0, 10);
@@ -13,64 +17,57 @@ function formatDate(d: Date) {
 <BaseLayout title="blog" description="Thoughts and writeups by Niro Åhman">
   <a slot="back" href="/">&larr; ~/index</a>
   <main class="blog">
-    <ul class="post-list">
-      {
-        posts.map((p) => (
-          <li class="post-item">
-            <time class="post-date" datetime={p.data.date.toISOString()}>
-              {formatDate(p.data.date)}
-            </time>
-            <div class="post-body">
-              <h2 class="post-title">
-                <a href={`/blog/${p.id}`}>{p.data.title}</a>
-              </h2>
-              <p class="post-desc">{p.data.description}</p>
-              {p.data.tags && (
-                <ul class="tag-list">
-                  {p.data.tags.map((t) => (
-                    <li class="tag">
-                      <a href={`/tags/${t.toLowerCase()}`}>{t}</a>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </li>
-        ))
-      }
-    </ul>
+    <div class="blog-layout">
+      <ul class="post-list">
+        {
+          posts.map((p) => (
+            <li
+              class="post-item"
+              data-search={`${p.data.title} ${p.data.description} ${(p.data.tags ?? []).join(' ')}`.toLowerCase()}
+              data-tags={(p.data.tags ?? []).map((t) => t.toLowerCase()).join(' ')}
+            >
+              <time class="post-date" datetime={p.data.date.toISOString()}>
+                {formatDate(p.data.date)}
+              </time>
+              <div class="post-body">
+                <h2 class="post-title">
+                  <a href={`/blog/${p.id}`}>{p.data.title}</a>
+                </h2>
+                <p class="post-desc">{p.data.description}</p>
+                {p.data.tags && (
+                  <ul class="tag-list">
+                    {p.data.tags.map((t) => (
+                      <li class="tag">
+                        <a href={`/tags/${t.toLowerCase()}`}>{t}</a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="no-results" aria-live="polite"></p>
+
+      <Sidebar tags={tags} inputId="blog-search" itemSelector=".post-item" tagLabel="tags" />
+    </div>
   </main>
 </BaseLayout>
 
 <style>
   .blog {
-    max-width: 720px;
+    max-width: 960px;
     margin: 0 auto;
     padding: 2rem 1.5rem;
     font-size: 0.875rem;
   }
 
-  .page-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 2.5rem;
-    font-size: 0.75rem;
-  }
-
-  .back {
-    color: var(--phosphor-dim);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-
-  .back:hover {
-    color: var(--phosphor);
-  }
-
-  .breadcrumb {
-    color: var(--phosphor);
-    opacity: 0.5;
+  .blog-layout {
+    display: grid;
+    grid-template-columns: 1fr 210px;
+    gap: 3rem;
+    align-items: start;
   }
 
   .post-list {
@@ -87,6 +84,14 @@ function formatDate(d: Date) {
     gap: 1.25rem;
     padding: 1.25rem 0;
     border-top: 1px solid var(--dim);
+  }
+
+  .no-results {
+    display: none;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--dim);
+    color: var(--phosphor-dim);
+    margin: 0;
   }
 
   .post-date {
@@ -118,6 +123,7 @@ function formatDate(d: Date) {
     padding: 0;
     display: flex;
     gap: 0.4rem;
+    flex-wrap: wrap;
   }
 
   .tag {
@@ -136,7 +142,19 @@ function formatDate(d: Date) {
     color: var(--phosphor);
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 700px) {
+    .blog-layout {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    :global(.sidebar) {
+      position: static;
+      order: -1;
+      border-bottom: 1px solid var(--dim);
+      padding-bottom: 1.5rem;
+    }
+
     .post-item {
       grid-template-columns: 1fr;
       gap: 0.25rem;

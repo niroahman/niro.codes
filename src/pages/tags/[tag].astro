@@ -42,7 +42,15 @@ function formatDate(d: Date) {
 ---
 
 <BaseLayout title={`tag: ${display}`} description={`Posts and projects tagged ${display}`}>
-  <a slot="back" href="/">&larr; ~/index</a>
+  <a slot="back" href="/blog" id="back-link">&larr; ~/back</a>
+  <script>
+    document.getElementById('back-link')?.addEventListener('click', (e) => {
+      if (history.length > 1) {
+        e.preventDefault();
+        history.back();
+      }
+    });
+  </script>
   <main class="tag-page">
     <h1 class="tag-heading">
       <span class="tag-prefix">[</span>{display}<span class="tag-prefix">]</span>

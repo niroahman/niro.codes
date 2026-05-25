@@ -1,0 +1,186 @@
+---
+import type { TagEntry } from '../utils/tags';
+
+interface Props {
+  tags: TagEntry[];
+  inputId: string;
+  itemSelector: string;
+  tagLabel?: string;
+}
+
+const { tags, inputId, itemSelector, tagLabel = 'tags' } = Astro.props;
+---
+
+<aside class="sidebar" data-input-id={inputId} data-item-selector={itemSelector}>
+  <section class="sidebar-section">
+    <h2 class="sidebar-title"><span aria-hidden="true">## </span>search</h2>
+    <div class="search-wrap">
+      <span class="search-gt" aria-hidden="true">&gt;</span>
+      <input
+        id={inputId}
+        type="search"
+        placeholder="type to filter…"
+        autocomplete="off"
+        spellcheck="false"
+        aria-label="Search"
+      />
+    </div>
+  </section>
+
+  {
+    tags.length > 0 && (
+      <section class="sidebar-section">
+        <h2 class="sidebar-title">
+          <span aria-hidden="true">## </span>
+          {tagLabel}
+        </h2>
+        <ul class="tag-cloud">
+          {tags.map(({ slug, display, count }) => (
+            <li>
+              <a href={`/tags/${slug}`} class="cloud-tag" data-tag={slug} data-count={count}>
+                {display}
+                <span class="tag-count">[{count}]</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )
+  }
+</aside>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.sidebar[data-input-id]').forEach((sidebar) => {
+    const inputId = sidebar.dataset.inputId!;
+    const itemSelector = sidebar.dataset.itemSelector!;
+    const input = document.getElementById(inputId) as HTMLInputElement | null;
+    const items = document.querySelectorAll<HTMLElement>(itemSelector);
+    const noResults = document.querySelector<HTMLElement>('.no-results');
+    const cloudLinks = sidebar.querySelectorAll<HTMLAnchorElement>('.cloud-tag');
+
+    function update() {
+      const q = input?.value.toLowerCase().trim() ?? '';
+      let visible = 0;
+      const tagCounts = new Map<string, number>();
+
+      items.forEach((item) => {
+        const match = !q || item.dataset.search?.includes(q);
+        item.style.display = match ? '' : 'none';
+        if (match) {
+          visible++;
+          item.dataset.tags
+            ?.split(' ')
+            .filter(Boolean)
+            .forEach((t) => tagCounts.set(t, (tagCounts.get(t) ?? 0) + 1));
+        }
+      });
+
+      if (noResults) {
+        noResults.style.display = visible === 0 && q ? '' : 'none';
+        if (visible === 0 && q) noResults.textContent = `– no results for '${q}'`;
+      }
+
+      cloudLinks.forEach((a) => {
+        const tag = a.dataset.tag ?? '';
+        const originalCount = Number(a.dataset.count ?? 0);
+        const count = q ? (tagCounts.get(tag) ?? 0) : originalCount;
+        a.style.display = count > 0 ? '' : 'none';
+        const countEl = a.querySelector('.tag-count');
+        if (countEl) countEl.textContent = q ? `[${count}/${originalCount}]` : `[${originalCount}]`;
+      });
+    }
+
+    input?.addEventListener('input', update);
+  });
+</script>
+
+<style>
+  .sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    position: sticky;
+    top: 1rem;
+  }
+
+  .sidebar-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .sidebar-title {
+    font-size: 0.75rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--phosphor);
+    margin: 0;
+  }
+
+  .sidebar-title span {
+    color: var(--phosphor-dim);
+    font-weight: normal;
+  }
+
+  .search-wrap {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid var(--dim);
+    padding: 0.3rem 0.5rem;
+  }
+
+  .search-gt {
+    color: var(--phosphor-dim);
+    font-size: 0.875rem;
+    flex-shrink: 0;
+  }
+
+  .search-wrap input {
+    background: none;
+    border: none;
+    outline: none;
+    color: var(--phosphor);
+    font-family: inherit;
+    font-size: 0.8rem;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .search-wrap input::placeholder {
+    color: var(--phosphor-dim);
+    opacity: 0.5;
+  }
+
+  .tag-cloud {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .cloud-tag {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    color: var(--phosphor-dim);
+    text-decoration: none;
+    font-size: 0.8rem;
+    padding: 0.15rem 0.35rem;
+    transition: color 0.15s;
+    border-left: 2px solid transparent;
+  }
+
+  .cloud-tag:hover {
+    color: var(--phosphor);
+    border-left-color: var(--phosphor-dim);
+  }
+
+  .tag-count {
+    font-size: 0.7rem;
+    opacity: 0.6;
+  }
+</style>

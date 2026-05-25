@@ -1,6 +1,8 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import Sidebar from '../../components/Sidebar.astro';
+import { buildTagList } from '../../utils/tags';
 
 const all = await getCollection('projects');
 const projects = all.sort((a, b) => {
@@ -8,6 +10,8 @@ const projects = all.sort((a, b) => {
   if (!a.data.featured && b.data.featured) return 1;
   return b.data.date.getTime() - a.data.date.getTime();
 });
+
+const tags = buildTagList(projects.map((p) => ({ tags: p.data.tech })));
 
 function initials(title: string) {
   return title
@@ -22,95 +26,88 @@ function initials(title: string) {
 <BaseLayout title="projects" description="Things Niro has built">
   <a slot="back" href="/">&larr; ~/index</a>
   <main class="projects">
-    <ul class="project-list">
-      {
-        projects.map((p) => (
-          <li class="project-card">
-            <a href={`/projects/${p.id}`} class="card-image-link" tabindex="-1">
-              <div class="card-image-wrap">
-                {p.data.image ? (
-                  <img src={p.data.image} alt={p.data.title} class="card-image" />
-                ) : (
-                  <div class="card-image-placeholder" aria-hidden="true">
-                    {initials(p.data.title)}
-                  </div>
-                )}
-              </div>
-            </a>
-            <div class="card-body">
-              <h2 class="card-title">
-                <a href={`/projects/${p.id}`}>{p.data.title}</a>
-              </h2>
-              <p class="card-desc">{p.data.description}</p>
-              <ul class="tech-list">
-                {p.data.tech.map((t) => (
-                  <li class="tech-tag">
-                    <a href={`/tags/${t.toLowerCase()}`}>{t}</a>
-                  </li>
-                ))}
-              </ul>
-              <div class="card-links">
-                <a href={`/projects/${p.id}`} class="card-link">
-                  details →
-                </a>
-                {p.data.slideUrl && (
-                  <a
-                    href={p.data.slideUrl}
-                    class="card-link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    slides ↗
+    <div class="projects-layout">
+      <ul class="project-list">
+        {
+          projects.map((p) => (
+            <li
+              class="project-card"
+              data-search={`${p.data.title} ${p.data.description} ${p.data.tech.join(' ')}`.toLowerCase()}
+              data-tags={p.data.tech.map((t) => t.toLowerCase()).join(' ')}
+            >
+              <a href={`/projects/${p.id}`} class="card-image-link" tabindex="-1">
+                <div class="card-image-wrap">
+                  {p.data.image ? (
+                    <img src={p.data.image} alt={p.data.title} class="card-image" />
+                  ) : (
+                    <div class="card-image-placeholder" aria-hidden="true">
+                      {initials(p.data.title)}
+                    </div>
+                  )}
+                </div>
+              </a>
+              <div class="card-body">
+                <h2 class="card-title">
+                  <a href={`/projects/${p.id}`}>{p.data.title}</a>
+                </h2>
+                <p class="card-desc">{p.data.description}</p>
+                <ul class="tech-list">
+                  {p.data.tech.map((t) => (
+                    <li class="tech-tag">
+                      <a href={`/tags/${t.toLowerCase()}`}>{t}</a>
+                    </li>
+                  ))}
+                </ul>
+                <div class="card-links">
+                  <a href={`/projects/${p.id}`} class="card-link">
+                    details →
                   </a>
-                )}
-                {p.data.github && (
-                  <a
-                    href={p.data.github}
-                    class="card-link"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    github ↗
-                  </a>
-                )}
+                  {p.data.slideUrl && (
+                    <a
+                      href={p.data.slideUrl}
+                      class="card-link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      slides ↗
+                    </a>
+                  )}
+                  {p.data.github && (
+                    <a
+                      href={p.data.github}
+                      class="card-link"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      github ↗
+                    </a>
+                  )}
+                </div>
               </div>
-            </div>
-          </li>
-        ))
-      }
-    </ul>
+            </li>
+          ))
+        }
+      </ul>
+      <p class="no-results" aria-live="polite"></p>
+
+      <Sidebar tags={tags} inputId="project-search" itemSelector=".project-card" tagLabel="tech" />
+    </div>
   </main>
 </BaseLayout>
 
 <style>
   .projects {
-    max-width: 860px;
+    max-width: 1060px;
     margin: 0 auto;
     padding: 2rem 1.5rem;
     font-size: 0.875rem;
   }
 
-  .page-header {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-bottom: 2.5rem;
-    font-size: 0.75rem;
-  }
-
-  .back {
-    color: var(--phosphor-dim);
-    text-decoration: none;
-    transition: color 0.15s;
-  }
-
-  .back:hover {
-    color: var(--phosphor);
-  }
-
-  .breadcrumb {
-    color: var(--phosphor);
-    opacity: 0.5;
+  .projects-layout {
+    display: grid;
+    grid-template-columns: 1fr 210px;
+    gap: 3rem;
+    align-items: start;
   }
 
   .project-list {
@@ -128,6 +125,14 @@ function initials(title: string) {
     gap: 1.5rem;
     border-top: 1px solid var(--dim);
     padding-top: 2rem;
+  }
+
+  .no-results {
+    display: none;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--dim);
+    color: var(--phosphor-dim);
+    margin: 0;
   }
 
   .card-image-wrap {
@@ -239,7 +244,19 @@ function initials(title: string) {
     color: var(--phosphor);
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 700px) {
+    .projects-layout {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+
+    :global(.sidebar) {
+      position: static;
+      order: -1;
+      border-bottom: 1px solid var(--dim);
+      padding-bottom: 1.5rem;
+    }
+
     .project-card {
       grid-template-columns: 1fr;
     }
