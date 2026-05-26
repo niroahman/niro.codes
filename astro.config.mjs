@@ -9,6 +9,7 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://niro.codes',
+  server: { host: true },
   vite: {
     plugins: [tailwindcss()],
   },
