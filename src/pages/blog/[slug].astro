@@ -12,7 +12,8 @@ const { Content } = await render(post);
 const { title, description, date, tags } = post.data;
 
 function formatDate(d: Date) {
-  return d.toISOString().slice(0, 10);
+  const [y, m, day] = d.toISOString().slice(0, 10).split('-');
+  return `${parseInt(day)}.${parseInt(m)}.${y}`;
 }
 ---
 
