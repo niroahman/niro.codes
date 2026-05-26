@@ -9,7 +9,7 @@
 
 # niro.codes
 
-Personal portfolio site with a CRT terminal aesthetic. Dark/light themes, user-selectable phosphor accent color, Space Invaders clone (NIRO.EXE coming soon).
+Personal portfolio site with a CRT terminal aesthetic. Dark/light themes, user-selectable phosphor accent color, built-in terminal simulation, and NIRO.EXE (Space Invaders clone).
 
 > **Built openly with AI.** Design and architecture planned together with Hermes (Samantha). Implementation written with [Claude Code](https://claude.ai/code) (Sonnet 4.6). The code is mine — the AI pair programming is just honest.
 
@@ -19,11 +19,12 @@ Personal portfolio site with a CRT terminal aesthetic. Dark/light themes, user-s
 
 | Layer      | Tech                                       |
 | ---------- | ------------------------------------------ |
-| Framework  | Astro 6 (SSG)                              |
+| Framework  | Astro 6 (SSG/SSR hybrid)                   |
 | Styling    | Tailwind CSS v4 + custom CRT design system |
 | Components | Astro components + React islands           |
 | Language   | TypeScript (strict)                        |
 | Deploy     | Vercel                                     |
+| DB         | Vercel Postgres (NIRO.EXE scores)          |
 | Analytics  | Umami (self-hosted, optional)              |
 | Tests      | Vitest + Playwright                        |
 
@@ -82,11 +83,12 @@ Git hooks via Lefthook — pre-commit: lint + format + unit tests. Pre-push: E2E
 
 ```
 src/
-  components/    # AppearanceControls, BootSequence, Head, NavPrompt, SlideEmbed
+  components/    # AppearanceControls, BootSequence, Head, NavPrompt, Sidebar, SlideEmbed
   content/       # Blog posts and project entries (MDX)
   layouts/       # BaseLayout (inner pages), CRTLayout (home/terminal)
-  pages/         # File-based routing
+  pages/         # about, blog, now, niro-exe, projects, tags
   scripts/       # termNav.ts — keyboard navigation
   styles/        # global.css — CRT design system, tokens, animations
+  utils/         # shared helpers
 e2e/             # Playwright smoke tests
 ```
