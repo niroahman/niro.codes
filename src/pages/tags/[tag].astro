@@ -37,7 +37,8 @@ export async function getStaticPaths() {
 const { display, matchingPosts, matchingProjects } = Astro.props;
 
 function formatDate(d: Date) {
-  return d.toISOString().slice(0, 10);
+  const [y, m, day] = d.toISOString().slice(0, 10).split('-');
+  return `${parseInt(day)}.${parseInt(m)}.${y}`;
 }
 ---
 

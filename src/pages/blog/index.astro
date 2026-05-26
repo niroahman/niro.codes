@@ -10,7 +10,8 @@ const posts = all.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
 const tags = buildTagList(posts.map((p) => ({ tags: p.data.tags ?? [] })));
 
 function formatDate(d: Date) {
-  return d.toISOString().slice(0, 10);
+  const [y, m, day] = d.toISOString().slice(0, 10).split('-');
+  return `${parseInt(day)}.${parseInt(m)}.${y}`;
 }
 ---
 
