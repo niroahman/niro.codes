@@ -1,9 +1,13 @@
 ---
-title: 'GDG Tampere: AI & Vibe-coding Meetup — Field Notes'
+published: true
+---
+
+title: "GDG Tampere: AI & Vibe-coding Meetup — Field Notes"
 status: draft
 date: 2026-05-25
 tags: [meetup, gdg, vibe-coding, ai, tampere, community]
-event: 'GDG Tampere AI & Vibe-coding Meetup, 25 May 2026'
+event: "GDG Tampere AI & Vibe-coding Meetup, 25 May 2026"
+
 ---
 
 # GDG Tampere: AI & Vibe-coding Meetup — Field Notes
