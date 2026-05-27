@@ -12,3 +12,5 @@ pre-push:
   commands:
     e2e:
       run: npm run test:e2e
+    build:
+      run: npm run build
