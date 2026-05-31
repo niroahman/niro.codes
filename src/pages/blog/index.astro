@@ -36,13 +36,25 @@ function formatDate(d: Date) {
                 </h2>
                 <p class="post-desc">{p.data.description}</p>
                 {p.data.tags && (
-                  <ul class="tag-list">
-                    {p.data.tags.map((t) => (
-                      <li class="tag">
-                        <a href={`/tags/${t.toLowerCase()}`}>{t}</a>
-                      </li>
-                    ))}
-                  </ul>
+                  <div class="tag-wrapper">
+                    <ul class="tag-list" id={`tags-${p.id}`}>
+                      {p.data.tags.map((t) => (
+                        <li class="tag">
+                          <a href={`/tags/${t.toLowerCase()}`}>{t}</a>
+                        </li>
+                      ))}
+                    </ul>
+                    {p.data.tags.length > 4 && (
+                      <button
+                        class="tag-toggle"
+                        aria-expanded="false"
+                        id={`tog-${p.id}`}
+                        onclick={`document.getElementById('tags-${p.id}').classList.toggle('expanded');this.textContent=this.textContent==='show less'?'+${p.data.tags.length - 4} more':'show less';this.setAttribute('aria-expanded',this.getAttribute('aria-expanded')==='true'?'false':'true')`}
+                      >
+                        +{p.data.tags.length - 4} more
+                      </button>
+                    )}
+                  </div>
                 )}
               </div>
             </li>
@@ -141,6 +153,52 @@ function formatDate(d: Date) {
 
   .tag a:hover {
     color: var(--phosphor);
+  }
+
+  /* ── Mobile tag collapse ── */
+  .tag-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.4rem;
+    margin: 0.5rem 0 0;
+  }
+
+  .tag-wrapper > .tag-list {
+    margin: 0;
+  }
+
+  @media (max-width: 700px) {
+    .tag-list .tag:nth-child(n + 5) {
+      display: none;
+    }
+
+    .tag-list.expanded .tag:nth-child(n + 5) {
+      display: inline-flex;
+    }
+  }
+
+  .tag-toggle {
+    display: none;
+  }
+
+  @media (max-width: 700px) {
+    .tag-toggle {
+      display: inline-flex;
+      background: none;
+      border: 1px solid var(--dim);
+      color: var(--phosphor-dim);
+      font-family: inherit;
+      font-size: 0.65rem;
+      padding: 0.1rem 0.4rem;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    .tag-toggle:hover {
+      color: var(--phosphor);
+      border-color: var(--phosphor);
+    }
   }
 
   @media (max-width: 700px) {

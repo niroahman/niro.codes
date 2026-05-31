@@ -25,36 +25,14 @@ function formatDate(d: Date) {
         <h1 class="post-title glow">{title}</h1>
         <time class="post-date" datetime={date.toISOString()}>{formatDate(date)}</time>
         {
-          tags && tags.length > 0 && (
-            <div class="tag-wrapper">
-              <ul class="tag-list" id={`tags-${post.id}`}>
-                {tags.map((t, i) => (
-                  <li class="tag" data-index={i}>
-                    <a href={`/tags/${t.toLowerCase()}`}>{t}</a>
-                  </li>
-                ))}
-              </ul>
-              {tags.length > 4 && (
-                <>
-                  <button
-                    class="tag-toggle"
-                    aria-expanded="false"
-                    onClick={`
-                      const btn = document.getElementById('tag-toggle-${post.id}');
-                      const list = document.getElementById('tags-${post.id}');
-                      if (!btn || !list) return;
-                      const expanded = btn.getAttribute('aria-expanded') === 'true';
-                      btn.setAttribute('aria-expanded', !expanded);
-                      list.classList.toggle('expanded', !expanded);
-                      btn.textContent = expanded ? '+${tags.length - 4} more' : 'show less';
-                    `}
-                    id={`tag-toggle-${post.id}`}
-                  >
-                    +{tags.length - 4} more
-                  </button>
-                </>
-              )}
-            </div>
+          tags && (
+            <ul class="tag-list">
+              {tags.map((t) => (
+                <li class="tag">
+                  <a href={`/tags/${t.toLowerCase()}`}>{t}</a>
+                </li>
+              ))}
+            </ul>
           )
         }
       </div>
@@ -107,7 +85,7 @@ function formatDate(d: Date) {
 
   .tag-list {
     list-style: none;
-    margin: 0;
+    margin: 0.75rem 0 0;
     padding: 0;
     display: flex;
     flex-wrap: wrap;
@@ -128,52 +106,6 @@ function formatDate(d: Date) {
 
   .tag a:hover {
     color: var(--phosphor);
-  }
-
-  /* ── Mobile tag collapse ── */
-  .tag-wrapper {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 0.4rem;
-    margin: 0.75rem 0 0;
-  }
-
-  .tag-wrapper > .tag-list {
-    margin: 0;
-  }
-
-  @media (max-width: 600px) {
-    .tag-list .tag:nth-child(n + 5) {
-      display: none;
-    }
-
-    .tag-list.expanded .tag:nth-child(n + 5) {
-      display: inline-flex;
-    }
-  }
-
-  .tag-toggle {
-    display: none;
-  }
-
-  @media (max-width: 600px) {
-    .tag-toggle {
-      display: inline-flex;
-      background: none;
-      border: 1px solid var(--dim);
-      color: var(--phosphor-dim);
-      font-family: inherit;
-      font-size: 0.65rem;
-      padding: 0.1rem 0.4rem;
-      cursor: pointer;
-      transition: color 0.15s;
-    }
-
-    .tag-toggle:hover {
-      color: var(--phosphor);
-      border-color: var(--phosphor);
-    }
   }
 
   .prose {
