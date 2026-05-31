@@ -63,7 +63,13 @@ function formatDate(d: Date) {
       </ul>
       <p class="no-results" aria-live="polite"></p>
 
-      <Sidebar tags={tags} inputId="blog-search" itemSelector=".post-item" tagLabel="tags" />
+      <Sidebar
+        tags={tags}
+        inputId="blog-search"
+        itemSelector=".post-item"
+        tagLabel="tags"
+        collapsible
+      />
     </div>
   </main>
 </BaseLayout>
