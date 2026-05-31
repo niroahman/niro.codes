@@ -232,6 +232,7 @@ body.crt #main-content {
 .base-shell {
   height: 100%;
   overflow-y: auto;
+  overflow-x: clip;
   overscroll-behavior: none;
   position: relative;
   scrollbar-width: none;

@@ -88,6 +88,7 @@ function formatDate(d: Date) {
     margin: 0.75rem 0 0;
     padding: 0;
     display: flex;
+    flex-wrap: wrap;
     gap: 0.4rem;
   }
 
@@ -111,6 +112,8 @@ function formatDate(d: Date) {
     color: var(--phosphor);
     line-height: 1.8;
     opacity: 0.88;
+    overflow-wrap: break-word;
+    word-break: break-word;
   }
 
   .prose :global(h2) {
@@ -153,5 +156,22 @@ function formatDate(d: Date) {
     margin: 1rem 0;
     color: var(--phosphor-dim);
     font-style: italic;
+  }
+
+  .prose :global(img) {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1.5rem 0;
+    border-radius: 4px;
+  }
+
+  .prose :global(img) + :global(em) {
+    display: block;
+    text-align: center;
+    font-size: 0.75rem;
+    color: var(--phosphor-dim);
+    margin-top: -0.75rem;
+    margin-bottom: 1rem;
   }
 </style>
