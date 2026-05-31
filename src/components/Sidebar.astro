@@ -99,8 +99,13 @@ const { tags, inputId, itemSelector, tagLabel = 'tags' } = Astro.props;
     display: flex;
     flex-direction: column;
     gap: 2rem;
-    position: sticky;
-    top: 1rem;
+  }
+
+  @media (min-width: 701px) {
+    .sidebar {
+      position: sticky;
+      top: 1rem;
+    }
   }
 
   .sidebar-section {
