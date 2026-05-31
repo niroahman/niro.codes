@@ -12,15 +12,6 @@ const projects = all.sort((a, b) => {
 });
 
 const tags = buildTagList(projects.map((p) => ({ tags: p.data.tech })));
-
-function initials(title: string) {
-  return title
-    .split(/[\s.]+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((w) => w[0].toUpperCase())
-    .join('');
-}
 ---
 
 <BaseLayout title="projects" description="Things Niro has built">
@@ -35,17 +26,6 @@ function initials(title: string) {
               data-search={`${p.data.title} ${p.data.description} ${p.data.tech.join(' ')}`.toLowerCase()}
               data-tags={p.data.tech.map((t) => t.toLowerCase()).join(' ')}
             >
-              <a href={`/projects/${p.id}`} class="card-image-link" tabindex="-1">
-                <div class="card-image-wrap">
-                  {p.data.image ? (
-                    <img src={p.data.image} alt={p.data.title} class="card-image" />
-                  ) : (
-                    <div class="card-image-placeholder" aria-hidden="true">
-                      {initials(p.data.title)}
-                    </div>
-                  )}
-                </div>
-              </a>
               <div class="card-body">
                 <h2 class="card-title">
                   <a href={`/projects/${p.id}`}>{p.data.title}</a>
@@ -120,9 +100,7 @@ function initials(title: string) {
   }
 
   .project-card {
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    gap: 1.5rem;
+    display: block;
     border-top: 1px solid var(--dim);
     padding-top: 2rem;
   }
