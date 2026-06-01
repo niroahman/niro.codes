@@ -285,8 +285,18 @@ const externalLinks = [
   }
 
   @media (max-width: 600px) {
+    .terminal {
+      overflow-y: auto;
+    }
+
     .logo {
       font-size: 5.5px;
+      max-width: 100%;
+      overflow-x: auto;
+    }
+
+    .content-center {
+      padding-top: 1.5rem;
     }
 
     .menu-item,
