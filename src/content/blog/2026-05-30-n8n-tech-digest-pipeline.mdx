@@ -59,7 +59,7 @@ services:
 
 Both services share the default network in the same Compose stack, so the tunnel reaches n8n at `http://n8n:5678`. The Docker port mapping `5678:5678` only publishes to the host and my LAN. Nothing is open on my router. The tunnel handles all inbound traffic, and the route for `n8n.example.com` is configured once in the Cloudflare Zero Trust dashboard, not in this file.
 
-One correction, since this repo is public: I first shipped this compose with `N8N_BLOCK_ENV_ACCESS_IN_NODE=false`, carried over from another stack. The Code nodes here never read environment variables, so it only loosened the instance for no reason. It is gone now.
+One correction: I first shipped this compose with `N8N_BLOCK_ENV_ACCESS_IN_NODE=false`, carried over from another stack. The Code nodes here never read environment variables, so it only loosened the instance for no reason.
 
 One detail to know: `N8N_ENCRYPTION_KEY` encrypts credentials at rest. Lose it and you lose every saved API key in your instance. Generate it once with this:
 
