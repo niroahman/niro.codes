@@ -31,12 +31,28 @@ persistence via Vercel Postgres.
 npm run dev            # dev server, localhost:4321
 npm run build          # production build → dist/
 npm run lint           # ESLint
-npm run format:check   # Prettier check
+npm run format:check   # Prettier check (read-only)
+npm run format         # Prettier fix (auto-format)
 npm run test           # Vitest unit tests
 npm run test:e2e       # Playwright E2E
 ```
 
-Always run `npm run build` and `npm run test` before committing.
+## Pre-commit checks
+
+Lefthook runs lint + format:check + unit tests on every `git commit`. Simulate
+the full suite without committing:
+
+```bash
+npx lefthook run pre-commit
+```
+
+Run individual checks:
+
+```bash
+npm run lint           # ESLint
+npm run format:check   # Prettier — fix failures with: npm run format
+npm run test           # Vitest
+```
 
 ## CSS architecture
 

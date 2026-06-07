@@ -54,3 +54,7 @@ playwright-report/
 # misc
 *.pem
 .node_repl_history
+
+# agent scaffolding
+.ai-team/
+.watson-prompt.md

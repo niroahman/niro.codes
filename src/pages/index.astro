@@ -97,42 +97,6 @@ const externalLinks = [
   </div>
 </CRTLayout>
 
-<script>
-  document.getElementById('home-menu')?.classList.add('visible');
-
-  /* BOOT SEQUENCE — uncomment to restore
-  function handleBootComplete() {
-    const boot = document.getElementById('boot-sequence');
-    const menu = document.getElementById('home-menu');
-
-    menu?.classList.add('visible');
-
-    const lineDelay = parseInt(boot?.dataset.lineDelay ?? '110');
-    const lines = Array.from(boot?.querySelectorAll<HTMLElement>('.boot-line') ?? []);
-    lines.forEach((line) => {
-      line.style.animation = 'none';
-      line.style.opacity = '1';
-    });
-    const pauseMs = 1200;
-    lines.forEach((line, i) => {
-      setTimeout(
-        () => {
-          line.style.transition = 'opacity 220ms ease-in';
-          line.style.opacity = '0';
-        },
-        pauseMs + i * lineDelay * 2
-      );
-    });
-  }
-
-  if ((window as Window & { __bootComplete?: boolean }).__bootComplete) {
-    handleBootComplete();
-  } else {
-    document.addEventListener('bootcomplete', handleBootComplete, { once: true });
-  }
-  */
-</script>
-
 <style>
   .terminal {
     display: flex;
@@ -182,12 +146,6 @@ const externalLinks = [
     display: flex;
     flex-direction: column;
     gap: 1.25rem;
-    opacity: 0;
-    transition: opacity 400ms ease-out;
-  }
-
-  #home-menu.visible {
-    opacity: 1;
   }
 
   .menu-list {
@@ -344,4 +302,3 @@ const externalLinks = [
     white-space: nowrap;
   }
 </style>
-<!-- trigger-vercel-update -->
