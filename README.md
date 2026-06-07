@@ -1,5 +1,7 @@
 ```
- ███╗   ██╗██╗██████╗  ██████╗  ·  ██████╗ ██████╗ ██████╗ ███████╗███████╗
+                                  ██╗
+                                  ╚═╝
+ ███╗   ██╗██╗██████╗  ██████╗      ██████╗ ██████╗ ██████╗ ███████╗███████╗
  ████╗  ██║██║██╔══██╗██╔═══██╗   ██╔════╝██╔═══██╗██╔══██╗██╔════╝██╔════╝
  ██╔██╗ ██║██║██████╔╝██║   ██║   ██║     ██║   ██║██║  ██║█████╗  ███████╗
  ██║╚██╗██║██║██╔══██╗██║   ██║   ██║     ██║   ██║██║  ██║██╔══╝  ╚════██║
@@ -11,7 +13,7 @@
 
 Personal portfolio site with a CRT terminal aesthetic. Dark/light themes, user-selectable phosphor accent color, built-in terminal simulation, and NIRO.EXE (Space Invaders clone).
 
-> **Built openly with AI.** Design and architecture planned together with Hermes (Samantha). Implementation written with [Claude Code](https://claude.ai/code) (Sonnet 4.6). The code is mine — the AI pair programming is just honest.
+> **Built openly with AI.** Design and architecture planned together with Hermes (Samantha). Astro implementation written with [Claude Code](https://claude.ai/code) (Sonnet 4.6).
 
 ---
 
